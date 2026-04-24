@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Protocols & Insights | DoctorsVideos.video</title>
+    <meta name="description" content="Explore deeply researched clinical protocols regarding metabolic health, insulin resistance, intermittent fasting, and weight loss.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .blog-grid {
+            display: flex;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            padding: 2rem;
+        }
+        .article-card {
+            flex: 1;
+            min-width: 320px;
+            text-align: left;
+            background: linear-gradient(145deg, #111827 0%, #1f2937 100%);
+            border: 1px solid #374151;
+            padding: 2rem;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+        }
+        .article-card:hover {
+            transform: translateY(-5px);
+            border-color: #0ea5e9;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+        .article-tag {
+            color: #10b981;
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+        .article-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+        }
+        .article-card p {
+            color: #9ca3af;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+        .article-card .read-btn {
+            background: rgba(14, 165, 233, 0.1);
+            color: #0ea5e9;
+            border: 1px solid #0ea5e9;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .article-card .read-btn:hover {
+            background: #0ea5e9;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Navigation -->
+    <nav class="navbar">
+        <div class="logo-container" onclick="window.location.href='index.html'" style="cursor: pointer;">
+            <div class="logo-mark">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#blueGreenGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <defs>
+                        <linearGradient id="blueGreenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#0ea5e9" />
+                            <stop offset="100%" stop-color="#10b981" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                </svg>
+            </div>
+            <span class="logo-text">DoctorsVideos<span class="logo-accent">.video</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="blog.html" class="nav-btn">Clinical Protocols</a>
+            <a href="index.html" class="nav-btn highlight-btn">Find Local Doctor</a>
+        </div>
+    </nav>
+
+    <header class="hero-section" style="padding-bottom: 3rem; min-height: auto;">
+        <div class="hero-content" style="max-width: 800px; padding-top: 4rem;">
+            <h1 class="hero-title">Metabolic Masterclass.</h1>
+            <p class="hero-subtitle">Open-source clinical protocols exploring insulin resistance, intermittent fasting, and reversing metabolic syndrome. No copays, just raw data.</p>
+        </div>
+    </header>
+
+    <section class="portals-section" style="padding-top: 0;">
+        <div class="blog-grid">
+            
+            <!-- Article card 1 -->
+            <div class="article-card">
+                <span class="article-tag">Metabolism</span>
+                <h3>How Insulin Controls Your Weight (And How to Reset Your Internal Thermostat)</h3>
+                <p>Learn how insulin resistance acts as the root cause of obesity, creating a state of internal starvation, and how to biologically lower your body set weight.</p>
+                <a href="#" class="read-btn">Read Protocol →</a>
+            </div>
+
+            <!-- Article card 2 -->
+             <div class="article-card">
+                <span class="article-tag">Fasting</span>
+                <h3>Intermittent Fasting Guide: 16:8 vs 36-Hour Fasts for Metabolic Health</h3>
+                <p>Discover the specific physiological benefits of the daily 16:8 fasting method versus utilizing 36-hour extended fasts to trigger deep autophagy.</p>
+                <a href="#" class="read-btn">Read Protocol →</a>
+            </div>
+
+            <!-- Article card 3 -->
+             <div class="article-card">
+                <span class="article-tag">Stress</span>
+                <h3>The Hidden Cause of Belly Fat: How Cortisol and Sleep Deprivation Drive Obesity</h3>
+                <p>Discover why extreme stress and sleep deprivation can make it physically impossible to lose weight by continuously driving a damaging cortisol-insulin cascade.</p>
+                <a href="#" class="read-btn">Read Protocol →</a>
+            </div>
+
+        </div>
+    </section>
+
+</body>
+</html>
