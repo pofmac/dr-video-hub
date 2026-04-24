@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Experts & Books | DoctorsVideos.video</title>
+    <meta name="description" content="Discover the foundational books and clinical protocols by Dr. Jason Fung, Dr. Ben Bikman, and Dr. Gary Fettke.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .experts-header { text-align: center; padding: 4rem 2rem 1rem; }
+        .experts-header h1 { font-family: 'Outfit', sans-serif; font-size: 3.5rem; color: #fff; margin-bottom: 1rem; }
+        .experts-header p { color: #9ca3af; font-size: 1.125rem; max-width: 600px; margin: 0 auto; }
+        
+        .split-layout { display: flex; gap: 2rem; max-width: 1400px; margin: 3rem auto; padding: 0 2rem; }
+        .expert-column { flex: 1; background: linear-gradient(145deg, #111827 0%, #1f2937 100%); border: 1px solid #374151; padding: 3rem; border-radius: 16px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .expert-column h2 { font-family: 'Outfit', sans-serif; font-size: 2.5rem; color: #fff; margin-bottom: 0.5rem; }
+        .expert-column p.bio { color: #d1d5db; line-height: 1.6; margin-bottom: 2rem; font-size: 1rem; }
+        
+        /* Placeholders for actual Amazon affiliate Book Covers */
+        .books-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+        .book-card { background: rgba(0,0,0,0.3); border: 1px solid #374151; padding: 1rem; border-radius: 8px; transition: transform 0.2s; cursor: pointer;}
+        .book-card:hover { transform: translateY(-5px); border-color: #0ea5e9; }
+        .book-img-placeholder { height: 180px; background: #374151; border-radius: 4px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 0.8rem; text-transform: uppercase;}
+        .book-title { color: #fff; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.3;}
+        .buy-btn { display: inline-block; background: #0ea5e9; color: #fff; font-size: 0.8rem; font-weight: 600; padding: 0.4rem 1rem; border-radius: 4px; text-decoration: none; width: 100%; box-sizing: border-box;}
+        .buy-btn:hover { background: #0284c7; }
+
+        /* Pioneer Spotlight Section */
+        .spotlight-section { max-width: 1400px; margin: 4rem auto; padding: 0 2rem; }
+        .spotlight-card { background: linear-gradient(145deg, #064e3b 0%, #065f46 100%); border: 1px solid #10b981; padding: 3rem; border-radius: 16px; display: flex; gap: 3rem; align-items: center; box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.1);}
+        .spotlight-content { flex: 2; }
+        .spotlight-content h2 { font-family: 'Outfit', sans-serif; font-size: 2.5rem; color: #fff; margin-bottom: 0.5rem; }
+        .spotlight-tag { color: #34d399; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; display: block; margin-bottom: 1rem; }
+        .spotlight-content p { color: #d1d5db; line-height: 1.7; margin-bottom: 1rem; }
+        .spotlight-books { flex: 1; }
+
+        @media (max-width: 900px) { 
+            .split-layout { flex-direction: column; } 
+            .spotlight-card { flex-direction: column; text-align: center; } 
+            .books-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Navigation -->
+    <nav class="navbar">
+        <div class="logo-container" onclick="window.location.href='index.html'" style="cursor: pointer;">
+            <div class="logo-mark">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#blueGreenGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <defs>
+                        <linearGradient id="blueGreenGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0ea5e9" /><stop offset="100%" stop-color="#10b981" /></linearGradient>
+                    </defs>
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                </svg>
+            </div>
+            <span class="logo-text">DoctorsVideos<span class="logo-accent">.video</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="experts.html" class="nav-btn">The Experts & Books</a>
+            <a href="blog.html" class="nav-btn">Clinical Protocols</a>
+            <a href="index.html" class="nav-btn highlight-btn">Find Local Doctor</a>
+        </div>
+    </nav>
+
+    <header class="experts-header">
+        <h1>Foundation of Truth</h1>
+        <p>Explore the clinical literature and foundational textbooks written by the pioneers of modern metabolic science.</p>
+    </header>
+
+    <!-- PERFECT 50/50 SPLIT SCREEN FOR FUNG & BIKMAN -->
+    <div class="split-layout">
+        
+        <!-- Dr. Jason Fung Column -->
+        <div class="expert-column">
+            <h2>Dr. Jason Fung</h2>
+            <p class="bio">A world-leading nephrologist and visionary behind the modern intermittent fasting movement. Dr. Fung fundamentally rewrote the medical understanding of insulin resistance, obesity, and the reversal of Type 2 Diabetes through distinct fasting protocols.</p>
+            
+            <div class="books-grid">
+                <div class="book-card">
+                    <div class="book-img-placeholder">[Book Cover Image]</div>
+                    <div class="book-title">The Obesity Code</div>
+                    <a href="#" class="buy-btn">View on Amazon</a>
+                </div>
+                <div class="book-card">
+                    <div class="book-img-placeholder">[Book Cover Image]</div>
+                    <div class="book-title">The Diabetes Code</div>
+                    <a href="#" class="buy-btn">View on Amazon</a>
+                </div>
+                <div class="book-card">
+                    <div class="book-img-placeholder">[Book Cover Image]</div>
+                    <div class="book-title">Complete Guide to Fasting</div>
+                    <a href="#" class="buy-btn">View on Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dr. Ben Bikman Column -->
+        <div class="expert-column">
+            <h2>Dr. Ben Bikman</h2>
+            <p class="bio">A prominent pathophysiologist and metabolic scientist. Dr. Bikman's intensive laboratory research into the exact mechanisms of insulin and fat cell bioenergetics has proven that chronic insulin elevation is the root of modern chronic disease.</p>
+            
+            <div class="books-grid">
+                <div class="book-card">
+                    <div class="book-img-placeholder">[Book Cover Image]</div>
+                    <div class="book-title">Why We Get Sick</div>
+                    <a href="#" class="buy-btn">View on Amazon</a>
+                </div>
+                <div class="book-card">
+                    <div class="book-img-placeholder">[Book Cover Image]</div>
+                    <div class="book-title">Insulin Resistance Guide</div>
+                    <a href="#" class="buy-btn">View on Amazon</a>
+                </div>
+                <!-- Blank card to match Fung's 3 column or he can add another book -->
+                <div class="book-card" style="opacity: 0.5;">
+                    <div class="book-img-placeholder">Coming Soon</div>
+                    <div class="book-title">Future Research</div>
+                    <a href="#" class="buy-btn" style="background:#374151;">Stay Tuned</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- PIONEER SPOTLIGHT: DR. GARY FETTKE -->
+    <section class="spotlight-section">
+        <div class="spotlight-card">
+            <div class="spotlight-content">
+                <span class="spotlight-tag">★ Pioneer Spotlight — Australia</span>
+                <h2>Dr. Gary Fettke</h2>
+                <p><strong>He chose his patients over his medical board and won.</strong></p>
+                <p>As an orthopedic surgeon in Tasmania, Australia, Dr. Gary Fettke grew tired of amputating the limbs of diabetic patients while the hospital force-fed them sugary food. He began advocating for Low-Carbohydrate, High-Fat (LCHF) diets to actively save their limbs.</p>
+                <p>In response, he was systematically silenced and dragged through hell by local dietetic authorities. Along with his wife Belinda, he fought a multi-year legal battle against the establishment, eventually securing a complete exoneration and a formal apology. He remains an absolute titan of medical integrity.</p>
+            </div>
+            <div class="spotlight-books">
+                <div class="book-card" style="background: rgba(0,0,0,0.5); border-color: #34d399;">
+                    <div class="book-img-placeholder" style="border-color:#10b981;">[Gary Fettke Resources]</div>
+                    <div class="book-title">Inversion: One Man's Answer for World Health</div>
+                    <a href="#" class="buy-btn" style="background:#10b981;">View Resources</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
