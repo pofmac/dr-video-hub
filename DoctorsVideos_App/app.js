@@ -2,7 +2,7 @@ const supabaseUrl = 'https://apodzqtcrlvhrgeluomi.supabase.co';
 const supabaseKey = 'sb_publishable_vYjgL6oVtI_Qdvxs3emGlg_9e-slavK';
 
 // Initialize Supabase Client
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 const ALL_STATES = [
     'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         console.log("Connecting to Supabase...");
         
-        let { data: doctors, error } = await supabase
+        let { data: doctors, error } = await supabaseClient
             .from('doctors_final')
             .select('*')
             .limit(1000); // Fetch up to 1000 records
