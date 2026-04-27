@@ -30,7 +30,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Ensure every doctor has a state for the mockup (until the new CSV is uploaded to Supabase)
         doctors = doctors.map(doc => {
-            const state = doc['State'] || doc.state || ALL_STATES[Math.floor(Math.random() * ALL_STATES.length)];
+            const rawState = doc['State'] || doc.state || "";
+            const state = rawState.trim() || ALL_STATES[Math.floor(Math.random() * ALL_STATES.length)];
+            
             return {
                 id: doc['Channel ID'] || doc.id,
                 name: doc['Channel Name'] || doc.doctor_name || doc.Channel_Name || "Doctor",
