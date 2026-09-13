@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         let { data: doctors, error } = await supabaseClient
             .from('doctors_final')
             .select('*')
+            .or('status.neq.pending,status.is.null') // Hide only doctors explicitly marked pending; treat blank/older records as already approved
             .limit(1000); // Fetch up to 1000 records
 
         if (error) {
