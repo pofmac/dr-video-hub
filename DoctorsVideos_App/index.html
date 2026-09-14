@@ -53,7 +53,6 @@
     <nav class="navbar">
         <div class="logo-container">
             <div class="logo-mark">
-                <!-- Using an inline SVG for the sleek play/pulse icon concept -->
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#blueGreenGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <defs>
                         <linearGradient id="blueGreenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -79,8 +78,7 @@
         <div class="hero-content">
             <h1 class="hero-title">1,000+ Perspectives. <br>Zero Copays.</h1>
             <p class="hero-subtitle">Bypass the waiting room. Access vetted videos from 325+ practicing doctors and get an instant second opinion on any health topic.</p>
-            
-            <!-- Quick Search Bar Placeholder -->
+
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="E.g., Try 'Shoulder Pain' or 'Fasting Glucose'">
                 <button class="search-submit">
@@ -89,26 +87,45 @@
             </div>
             <p class="triage-prompt">Not sure what to search? <a href="#" class="triage-link">Ask the AI Symptom Desk →</a></p>
         </div>
+
         <!-- Cinema Mode Player -->
         <div class="cinema-player-container">
             <div class="cinema-player-wrapper">
-                <video class="main-video-player" poster="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" controls>
-                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+                <iframe class="main-video-player" id="cinema-iframe"
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                    title="Featured doctor video" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
                 <div class="cinema-glow"></div>
             </div>
-            <div class="cinema-caption">
+            <div class="cinema-caption" id="cinema-caption">
                 <span class="live-pulse"></span>
-                <strong>Live Debate:</strong> Dr. Fung vs. Dr. Bikman on Fasting Protocols
+                <strong>Live Portal:</strong> Loading...
+            </div>
+
+            <div class="stats-bar" id="stats-bar" style="display:flex; gap:30px; justify-content:center; margin-top:20px; flex-wrap:wrap;">
+                <div style="text-align:center;">
+                    <div style="font-size:2rem; font-weight:800; color:#0ea5e9;" id="stat-doctors">--</div>
+                    <div style="font-size:0.85rem; color:#888;">Doctors</div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-size:2rem; font-weight:800; color:#10b981;" id="stat-videos">--</div>
+                    <div style="font-size:0.85rem; color:#888;">Videos</div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-size:2rem; font-weight:800; color:#0ea5e9;" id="stat-specialties">--</div>
+                    <div style="font-size:0.85rem; color:#888;">Specialties</div>
+                </div>
             </div>
         </div>
-    </header>    <!-- The 3 Core Portals -->
+    </header>
+
+    <!-- The 3 Core Portals -->
     <section class="portals-section">
         <h2 class="section-title">Choose Your Perspective</h2>
         <div class="portals-grid">
-            
-            <!-- Portal 1 -->
+
             <div class="portal-card">
                 <div class="portal-icon gradient-blue">🧪</div>
                 <h3 class="portal-title">The Self-<br>Experimenters</h3>
@@ -116,7 +133,6 @@
                 <button class="portal-btn">Enter Portal</button>
             </div>
 
-            <!-- Portal 2 -->
             <div class="portal-card">
                 <div class="portal-icon gradient-purple">🥊</div>
                 <h3 class="portal-title">The<br>Debaters</h3>
@@ -124,7 +140,6 @@
                 <button class="portal-btn">Watch Debates</button>
             </div>
 
-            <!-- Portal 3 -->
             <div class="portal-card">
                 <div class="portal-icon gradient-green">📍</div>
                 <h3 class="portal-title">Hometown<br>Directory</h3>
@@ -152,8 +167,7 @@
                 <a href="#" class="state-link">South Dakota</a> <a href="#" class="state-link">Tennessee</a> <a href="#" class="state-link">Texas</a> <a href="#" class="state-link">Utah</a> <a href="#" class="state-link">Vermont</a>
                 <a href="#" class="state-link">Virginia</a> <a href="#" class="state-link">Washington</a> <a href="#" class="state-link">West Virginia</a> <a href="#" class="state-link">Wisconsin</a> <a href="#" class="state-link">Wyoming</a>
             </div>
-            
-            <!-- Dynamic Doctor Results Grid (Hidden until state clicked) -->
+
             <div id="doctor-results-header" style="display:none; margin-top: 50px; text-align: center;">
                 <h3 id="doctor-results-title" style="font-size: 2rem; color: #0ea5e9;">Doctors in State</h3>
             </div>
