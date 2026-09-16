@@ -1,19 +1,19 @@
 const SYMPTOM_MAP = [
-    { keywords: ['headache', 'migraine', 'head pain'], specialty: 'Neurology' },
-    { keywords: ['chest pain', 'heart', 'palpitations', 'cholesterol'], specialty: 'Cardiology' },
-    { keywords: ['cough', 'shortness of breath', 'breathing', 'asthma'], specialty: 'Pulmonology' },
-    { keywords: ['fever', 'infection', 'flu', 'cold symptoms'], specialty: 'Internal Medicine' },
-    { keywords: ['back pain', 'joint pain', 'body aches', 'arthritis'], specialty: 'Orthopedics' },
-    { keywords: ['nausea', 'vomiting', 'stomach pain', 'bloating', 'heartburn', 'indigestion', 'diarrhea', 'constipation'], specialty: 'Gastroenterology' },
-    { keywords: ['fatigue', 'tired', 'exhaustion', 'low energy'], specialty: 'Internal Medicine' },
-    { keywords: ['anxiety', 'depression', 'stress', 'mental health'], specialty: 'Psychiatry' },
-    { keywords: ['diabetes', 'blood sugar', 'insulin', 'thyroid'], specialty: 'Endocrinology' },
-    { keywords: ['hair loss', 'acne', 'rash', 'skin'], specialty: 'Dermatology' },
-    { keywords: ['dizziness', 'lightheaded', 'memory loss', 'balance'], specialty: 'Neurology' },
-    { keywords: ['sore throat', 'ear', 'sinus', 'nasal congestion'], specialty: 'ENT' },
-    { keywords: ['kidney stones', 'urinary'], specialty: 'Urology' },
-    { keywords: ['sleep', 'insomnia', 'snoring'], specialty: 'Sleep Medicine' },
-    { keywords: ['pregnancy', 'fertility'], specialty: 'OB/GYN' },
+    { keywords: ['headache', 'migraine', 'head pain'], specialtyMatch: ['neuro'] },
+    { keywords: ['chest pain', 'heart', 'palpitations', 'cholesterol'], specialtyMatch: ['cardio', 'heart'] },
+    { keywords: ['cough', 'shortness of breath', 'breathing', 'asthma'], specialtyMatch: ['pulmon', 'lung', 'respirat'] },
+    { keywords: ['fever', 'infection', 'flu', 'cold symptoms'], specialtyMatch: ['internal medicine', 'family medicine'] },
+    { keywords: ['back pain', 'joint pain', 'body aches', 'arthritis'], specialtyMatch: ['orthoped', 'joint', 'bone'] },
+    { keywords: ['nausea', 'vomiting', 'stomach pain', 'bloating', 'heartburn', 'indigestion', 'diarrhea', 'constipation'], specialtyMatch: ['gastro', 'digest', 'stomach'] },
+    { keywords: ['fatigue', 'tired', 'exhaustion', 'low energy'], specialtyMatch: ['internal medicine', 'family medicine'] },
+    { keywords: ['anxiety', 'depression', 'stress', 'mental health'], specialtyMatch: ['psychiat', 'mental health'] },
+    { keywords: ['diabetes', 'blood sugar', 'insulin', 'thyroid'], specialtyMatch: ['endocrin', 'diabetes', 'thyroid'] },
+    { keywords: ['hair loss', 'acne', 'rash', 'skin'], specialtyMatch: ['dermatolog', 'skin'] },
+    { keywords: ['dizziness', 'lightheaded', 'memory loss', 'balance'], specialtyMatch: ['neuro'] },
+    { keywords: ['sore throat', 'ear', 'sinus', 'nasal congestion'], specialtyMatch: ['ent', 'ear nose throat', 'otolaryng'] },
+    { keywords: ['kidney stones', 'urinary'], specialtyMatch: ['urolog', 'kidney'] },
+    { keywords: ['sleep', 'insomnia', 'snoring'], specialtyMatch: ['sleep'] },
+    { keywords: ['pregnancy', 'fertility'], specialtyMatch: ['ob/gyn', 'obstetric', 'gynecolog', 'fertility'] },
 ];
 
 function matchSpecialty(userText) {
@@ -21,17 +21,24 @@ function matchSpecialty(userText) {
     const matches = [];
     SYMPTOM_MAP.forEach(entry => {
         const hit = entry.keywords.some(kw => text.includes(kw));
-        if (hit && !matches.includes(entry.specialty)) matches.push(entry.specialty);
+        if (hit) matches.push(entry.specialtyMatch);
     });
     return matches;
+}
+
+function findDoctorsForFragments(doctors, fragments) {
+    return doctors.filter(d => {
+        const spec = (d.specialty || '').toLowerCase();
+        return fragments.some(frag => spec.includes(frag));
+    });
 }
 
 function renderTriageResponse(userText) {
     const responseEl = document.getElementById('triage-response');
     const doctors = window.allDoctors || [];
-    const matches = matchSpecialty(userText);
+    const matchGroups = matchSpecialty(userText);
 
-    if (matches.length === 0) {
+    if (matchGroups.length === 0) {
         responseEl.innerHTML = `
             <div class="triage-bot-msg">
                 I couldn't match that to a specialty yet. Try different words,
@@ -40,24 +47,25 @@ function renderTriageResponse(userText) {
         return;
     }
 
-    const buttonsHtml = matches.map(specialty => {
-        const count = doctors.filter(d => d.specialty === specialty).length;
-        return `<button class="triage-suggestion-btn" data-specialty="${specialty}">
-                    Show ${specialty} doctors (${count})
+    const buttonsHtml = matchGroups.map(fragments => {
+        const matchedDocs = findDoctorsForFragments(doctors, fragments);
+        const label = fragments[0];
+        return `<button class="triage-suggestion-btn" data-fragments='${JSON.stringify(fragments)}'>
+                    Show doctors (${matchedDocs.length})
                 </button>`;
     }).join('');
 
     responseEl.innerHTML = `
         <div class="triage-bot-msg">
-            That could fall under ${matches.join(' or ')}. Want to see who covers that?
+            Here's what might cover that. Want to see who's available?
         </div>
         <div class="triage-suggestions">${buttonsHtml}</div>`;
 
     document.querySelectorAll('.triage-suggestion-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            const specialty = btn.dataset.specialty;
-            const filtered = doctors.filter(d => d.specialty === specialty);
-            renderDoctorCards(filtered, specialty, 'specialty');
+            const fragments = JSON.parse(btn.dataset.fragments);
+            const filtered = findDoctorsForFragments(doctors, fragments);
+            renderDoctorCards(filtered, fragments[0], 'specialty');
         });
     });
 }
