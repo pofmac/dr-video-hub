@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         console.log(`Fetched ${doctors.length} doctors from live Supabase database!`);
 
-        // Fetch videos separately (real YouTube video IDs)
         let { data: videos, error: vidError } = await supabaseClient
             .from('videos')
             .select('*')
@@ -37,13 +36,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         console.log(`Fetched ${allVideos.length} videos from live Supabase database!`);
 
-        // FIXED: no longer overwrites real numeric id with Channel ID
         doctors = doctors.map(doc => {
             const rawState = doc['State'] || doc.state || "";
             const state = rawState.trim() || ALL_STATES[Math.floor(Math.random() * ALL_STATES.length)];
 
             return {
-                db_id: doc.id, // real numeric primary key - used to match videos.doctor_id
+                db_id: doc.id,
                 channel_id: doc['Channel ID'],
                 name: doc['Channel Name'] || doc.doctor_name || doc.Channel_Name || "Doctor",
                 state: state,
@@ -51,6 +49,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 video_url: doc['Channel URL'] || doc.video_url || doc.Channel_URL
             };
         });
+
+        window.allDoctors = doctors;
 
         populateUI(doctors);
         populateStats(doctors);
@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             }
         });
+        window.allDoctors = mockDoctors;
         populateUI(mockDoctors);
     }
 });
@@ -111,7 +112,7 @@ function setupStateGrid(doctors) {
 
             a.addEventListener('click', (e) => {
                 e.preventDefault();
-                renderDoctorCards(stateDoctors, state);
+                renderDoctorCards(stateDoctors, state, 'state');
             });
         } else {
             a.innerHTML = state;
@@ -138,12 +139,10 @@ function playVideoInCinema(doctor) {
         caption.innerHTML = `<span class="live-pulse"></span><strong>Now Playing:</strong> ${doctor.name} - ${doctor.specialty}`;
     }
 
-    // Scroll the player into view so the visitor sees it start
     document.querySelector('.cinema-player-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function setupCinemaPlayer(doctors) {
-    // Pick a random doctor who actually has a real video
     const doctorsWithVideos = doctors.filter(d => getVideoForDoctor(d.db_id));
     if (doctorsWithVideos.length === 0) return;
 
@@ -151,7 +150,7 @@ function setupCinemaPlayer(doctors) {
     playVideoInCinema(randomDoc);
 }
 
-function renderDoctorCards(doctors, stateName) {
+function renderDoctorCards(doctors, label, type = 'state') {
     const resultsHeader = document.getElementById('doctor-results-header');
     const resultsTitle = document.getElementById('doctor-results-title');
     const resultsContainer = document.getElementById('doctor-results');
@@ -160,7 +159,10 @@ function renderDoctorCards(doctors, stateName) {
 
     resultsHeader.style.display = 'block';
     resultsContainer.style.display = 'flex';
-    resultsTitle.innerHTML = `<span style="color:#fff;">Vetted Doctors in</span> <span style="background: -webkit-linear-gradient(#0ea5e9, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${stateName}</span>`;
+
+    const prefix = type === 'specialty' ? 'Vetted' : 'Vetted Doctors in';
+    const suffix = type === 'specialty' ? 'Specialists' : '';
+    resultsTitle.innerHTML = `<span style="color:#fff;">${prefix}</span> <span style="background: -webkit-linear-gradient(#0ea5e9, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${label}</span> <span style="color:#fff;">${suffix}</span>`;
 
     resultsContainer.innerHTML = '';
 
