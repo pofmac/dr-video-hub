@@ -68,10 +68,19 @@
         <div class="nav-links">
             <a href="experts.html" class="nav-btn">The Experts & Books</a>
             <a href="blog.html" class="nav-btn">Clinical Protocols</a>
-            <a href="#" class="nav-btn">AI Triage Desk</a>
+            <a href="#" class="nav-btn" id="triage-toggle">AI Triage Desk</a>
             <a href="#" class="nav-btn highlight-btn">Find Local Doctor</a>
         </div>
     </nav>
+
+    <div id="triage-panel" style="display:none; max-width: 420px; margin: 20px auto; background: #12141c; border-radius: 12px; padding: 20px; border: 1px solid #2a2d3a;">
+        <p style="color:#fff; font-weight:600; margin-bottom:12px;">AI Triage Desk — describe what you're looking for</p>
+        <div id="triage-response" style="margin-bottom: 12px; color:#ccc; font-size:14px;"></div>
+        <div style="display:flex; gap:8px;">
+            <input type="text" id="triage-input" placeholder="e.g. persistent cough" style="flex:1; padding:8px; border-radius:6px; border:1px solid #333; background:#1a1d28; color:#fff;">
+            <button id="triage-send" style="padding:8px 16px; border-radius:6px; background:#0ea5e9; color:#fff; border:none;">Ask</button>
+        </div>
+    </div>
 
     <!-- Top Hero Section -->
     <header class="hero-section">
@@ -178,6 +187,7 @@
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="triage-desk.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
