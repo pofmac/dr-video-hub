@@ -3,7 +3,7 @@
     { keywords: ['chest pain', 'heart', 'palpitations', 'cholesterol'], specialtyMatch: ['cardio', 'heart'] },
     { keywords: ['cough', 'shortness of breath', 'breathing', 'asthma'], specialtyMatch: ['pulmon', 'lung', 'respirat'] },
     { keywords: ['fever', 'infection', 'flu', 'cold symptoms'], specialtyMatch: ['internal medicine', 'family medicine'] },
-    { keywords: ['back pain', 'joint pain', 'body aches', 'arthritis'], specialtyMatch: ['orthoped', 'joint', 'bone'] },
+    { keywords: ['back pain', 'joint pain', 'shoulder pain', 'knee pain', 'hip pain', 'body aches', 'arthritis', 'sports injury'], specialtyMatch: ['orthoped', 'joint', 'bone'] },
     { keywords: ['nausea', 'vomiting', 'stomach pain', 'bloating', 'heartburn', 'indigestion', 'diarrhea', 'constipation'], specialtyMatch: ['gastro', 'digest', 'stomach'] },
     { keywords: ['fatigue', 'tired', 'exhaustion', 'low energy'], specialtyMatch: ['internal medicine', 'family medicine'] },
     { keywords: ['anxiety', 'depression', 'stress', 'mental health'], specialtyMatch: ['psychiat', 'mental health'] },
