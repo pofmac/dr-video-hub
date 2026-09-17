@@ -1,4 +1,4 @@
-const SYMPTOM_MAP = [
+ const SYMPTOM_MAP = [
     { keywords: ['headache', 'migraine', 'head pain'], specialtyMatch: ['neuro'] },
     { keywords: ['chest pain', 'heart', 'palpitations', 'cholesterol'], specialtyMatch: ['cardio', 'heart'] },
     { keywords: ['cough', 'shortness of breath', 'breathing', 'asthma'], specialtyMatch: ['pulmon', 'lung', 'respirat'] },
@@ -82,6 +82,13 @@ document.addEventListener('DOMContentLoaded', () => {
             panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
         });
     }
+
+    document.querySelectorAll('.triage-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const example = chip.dataset.example;
+            renderTriageResponse(example);
+        });
+    });
 
     if (!input || !sendBtn) return;
 
