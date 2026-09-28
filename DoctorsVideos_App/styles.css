@@ -578,3 +578,133 @@ a.portal-btn {
 .search-results .triage-bot-msg {
     color: var(--text-main);
 }
+
+/* Ad spaces: sizes are reserved so the page doesn't jump when an ad loads */
+.ad-slot {
+    margin: 40px auto;
+    padding: 0 16px;
+    text-align: center;
+}
+
+.ad-banner { max-width: 760px; }
+.ad-banner .ad-body { min-height: 90px; }
+.ad-box { max-width: 332px; }
+.ad-box .ad-body { min-height: 250px; }
+
+@media (max-width: 600px) {
+    .ad-banner .ad-body { min-height: 100px; }
+}
+
+.ad-label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.ad-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    background: var(--bg-secondary);
+    color: var(--text-main);
+    text-decoration: none;
+    padding: 16px 20px;
+}
+
+.ad-body img { max-width: 100%; border-radius: 6px; }
+.ad-body span { color: var(--text-muted); font-size: 0.9rem; }
+
+.ad-placeholder {
+    border-style: dashed;
+    background: transparent;
+}
+
+.ad-placeholder strong { color: var(--brand-blue-dark); }
+
+/* Sponsored card at the top of a state's doctor results */
+.sponsor-card {
+    border-top-color: var(--alert-orange);
+    background: #273449;
+}
+
+.sponsor-card .card-specialty { color: var(--alert-orange); }
+
+.sponsor-open { border: 1px dashed #64748b; border-top: 5px solid var(--alert-orange); }
+
+.site-footer a { color: #cbd5e1; }
+
+/* Advertise with us page */
+.advertise-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 50px 20px 70px;
+}
+
+.advertise-page h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    line-height: 1.15;
+    margin-bottom: 14px;
+}
+
+.advertise-page h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    margin: 40px 0 16px;
+}
+
+.advertise-lede { color: var(--text-muted); font-size: 1.1rem; max-width: 65ch; }
+
+.spot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.spot-card {
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.spot-card h3 { font-size: 1.1rem; }
+.spot-card p { color: var(--text-muted); font-size: 0.95rem; }
+.spot-card .spot-price { color: var(--text-main); font-weight: 700; font-size: 1.1rem; margin-top: auto; }
+.spot-note { color: var(--text-muted); font-size: 0.9rem; margin-top: 12px; }
+
+.advertise-rules { padding-left: 20px; color: var(--text-muted); display: grid; gap: 6px; }
+
+.ad-form { display: grid; gap: 14px; max-width: 520px; }
+.form-row { display: grid; gap: 4px; }
+.form-row label { font-weight: 600; font-size: 0.9rem; }
+.form-row input, .form-row select, .form-row textarea {
+    font: inherit;
+    padding: 10px 12px;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    background: #fff;
+}
+.form-row input:focus, .form-row select:focus, .form-row textarea:focus { outline: 2px solid var(--brand-blue); outline-offset: 1px; }
+
+.ad-submit {
+    justify-self: start;
+    background: linear-gradient(135deg, var(--brand-blue), var(--brand-green));
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 28px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.ad-submit:disabled { opacity: 0.6; cursor: default; }
+.ad-form-status { color: var(--text-muted); min-height: 1.5em; }

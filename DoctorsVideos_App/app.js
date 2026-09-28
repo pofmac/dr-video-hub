@@ -181,7 +181,8 @@ function renderDoctorCards(doctors, label, type = 'state') {
     const suffix = type === 'specialty' ? 'Doctors' : '';
     resultsTitle.innerHTML = `<span style="color:#fff;">${prefix}</span> <span style="background: -webkit-linear-gradient(#0ea5e9, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${escapeHtml(label)}</span> <span style="color:#fff;">${suffix}</span>`;
 
-    resultsContainer.innerHTML = '';
+    resultsContainer.innerHTML = (type === 'state' && label !== LOCATION_UNLISTED && typeof stateSponsorCardHtml === 'function')
+        ? stateSponsorCardHtml(label) : '';
 
     doctors.forEach(doc => {
         const card = document.createElement('div');
