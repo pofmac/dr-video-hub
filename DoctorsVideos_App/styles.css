@@ -460,3 +460,72 @@ body {
 .card-btn:hover {
     box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
 }
+
+/* Medical disclaimer bar (replaces the old news ticker) */
+.disclaimer-bar {
+    background-color: #1e293b;
+    color: #fff;
+    font-size: 0.85rem;
+    padding: 8px 5%;
+    text-align: center;
+    border-bottom: 2px solid var(--brand-blue);
+}
+
+.portal-btn:disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
+a.portal-btn {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.triage-emergency {
+    background: #7f1d1d;
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.triage-note {
+    color: #94a3b8;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.site-footer {
+    background: #0f172a;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    padding: 30px 5%;
+    text-align: center;
+}
+
+.site-footer p {
+    max-width: 800px;
+    margin: 0 auto 10px;
+}
+
+.triage-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.triage-suggestion-btn {
+    background: #0ea5e9;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.triage-suggestion-btn:hover {
+    background: #0284c7;
+}

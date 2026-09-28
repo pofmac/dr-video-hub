@@ -10,6 +10,29 @@ const ALL_STATES = [
     'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
 ];
 
+const STATE_ABBR = {
+    AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California', CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia',
+    HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa', KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland',
+    MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MS: 'Mississippi', MO: 'Missouri', MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey',
+    NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio', OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina',
+    SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming'
+};
+
+// Doctors whose state is blank or outside the US are grouped here instead of being given a made-up state.
+const LOCATION_UNLISTED = 'Location not listed';
+
+function normalizeState(raw) {
+    const value = (raw || '').trim();
+    if (!value) return LOCATION_UNLISTED;
+    const byName = ALL_STATES.find(s => s.toLowerCase() === value.toLowerCase());
+    if (byName) return byName;
+    return STATE_ABBR[value.toUpperCase()] || LOCATION_UNLISTED;
+}
+
+function escapeHtml(text) {
+    return String(text ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+}
+
 let allVideos = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -37,8 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log(`Fetched ${allVideos.length} videos from live Supabase database!`);
 
         doctors = doctors.map(doc => {
-            const rawState = doc['State'] || doc.state || "";
-            const state = rawState.trim() || ALL_STATES[Math.floor(Math.random() * ALL_STATES.length)];
+            const state = normalizeState(doc['State'] || doc.state);
 
             return {
                 db_id: doc.id,
@@ -56,22 +78,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         populateStats(doctors);
 
     } catch(err) {
-        console.warn("Could not connect to Supabase. Reverting to local simulation mode...", err);
-
-        const mockDoctors = [];
-        ALL_STATES.forEach(state => {
-            for(let i=0; i < 5; i++) {
-                mockDoctors.push({
-                    db_id: Math.random(),
-                    name: `Dr. Sample ${state}`,
-                    state: state,
-                    specialty: i % 2 === 0 ? "Cardiologist" : "Neurologist",
-                    video_url: "#"
-                });
-            }
-        });
-        window.allDoctors = mockDoctors;
-        populateUI(mockDoctors);
+        console.error("Could not load doctors from Supabase.", err);
+        window.allDoctors = [];
+        const grid = document.querySelector('.state-grid');
+        if (grid) grid.innerHTML = '<p class="directory-subtitle">The doctor directory could not be loaded right now. Please refresh the page or try again later.</p>';
+        const caption = document.getElementById('cinema-caption');
+        if (caption) caption.textContent = 'Videos could not be loaded right now.';
     }
 });
 
@@ -100,8 +112,9 @@ function setupStateGrid(doctors) {
 
     grid.innerHTML = '';
 
-    ALL_STATES.forEach(state => {
+    [...ALL_STATES, LOCATION_UNLISTED].forEach(state => {
         const stateDoctors = doctors.filter(d => d.state === state);
+        if (state === LOCATION_UNLISTED && stateDoctors.length === 0) return;
 
         const a = document.createElement('a');
         a.href = '#';
@@ -136,7 +149,7 @@ function playVideoInCinema(doctor) {
     }
 
     if (caption) {
-        caption.innerHTML = `<span class="live-pulse"></span><strong>Now Playing:</strong> ${doctor.name} - ${doctor.specialty}`;
+        caption.innerHTML = `<span class="live-pulse"></span><strong>Now Playing:</strong> ${escapeHtml(doctor.name)} - ${escapeHtml(doctor.specialty)}`;
     }
 
     document.querySelector('.cinema-player-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -144,7 +157,11 @@ function playVideoInCinema(doctor) {
 
 function setupCinemaPlayer(doctors) {
     const doctorsWithVideos = doctors.filter(d => getVideoForDoctor(d.db_id));
-    if (doctorsWithVideos.length === 0) return;
+    if (doctorsWithVideos.length === 0) {
+        const caption = document.getElementById('cinema-caption');
+        if (caption) caption.textContent = 'Featured videos are coming soon.';
+        return;
+    }
 
     const randomDoc = doctorsWithVideos[Math.floor(Math.random() * doctorsWithVideos.length)];
     playVideoInCinema(randomDoc);
@@ -160,9 +177,9 @@ function renderDoctorCards(doctors, label, type = 'state') {
     resultsHeader.style.display = 'block';
     resultsContainer.style.display = 'flex';
 
-    const prefix = type === 'specialty' ? 'Vetted' : 'Vetted Doctors in';
-    const suffix = type === 'specialty' ? 'Specialists' : '';
-    resultsTitle.innerHTML = `<span style="color:#fff;">${prefix}</span> <span style="background: -webkit-linear-gradient(#0ea5e9, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${label}</span> <span style="color:#fff;">${suffix}</span>`;
+    const prefix = type === 'specialty' ? 'Featured' : (label === LOCATION_UNLISTED ? 'Featured Doctors:' : 'Featured Doctors in');
+    const suffix = type === 'specialty' ? 'Doctors' : '';
+    resultsTitle.innerHTML = `<span style="color:#fff;">${prefix}</span> <span style="background: -webkit-linear-gradient(#0ea5e9, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${escapeHtml(label)}</span> <span style="color:#fff;">${suffix}</span>`;
 
     resultsContainer.innerHTML = '';
 
@@ -176,9 +193,9 @@ function renderDoctorCards(doctors, label, type = 'state') {
 
         card.innerHTML = `
             <div class="card-inner">
-                <div class="card-specialty">${specialty}</div>
-                <h3 class="card-name">${cleanedName}</h3>
-                <div class="card-state">📍 ${doc.state}</div>
+                <div class="card-specialty">${escapeHtml(specialty)}</div>
+                <h3 class="card-name">${escapeHtml(cleanedName)}</h3>
+                <div class="card-state">📍 ${escapeHtml(doc.state)}</div>
             </div>
             <button class="card-btn" ${hasVideo ? '' : 'disabled'}>
                 ${hasVideo ? '▶ Watch Video' : 'No Video Yet'}

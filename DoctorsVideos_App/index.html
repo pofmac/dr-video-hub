@@ -6,7 +6,7 @@
     <title>DoctorsVideos.video | The Ultimate Health Triage & Medical Database</title>
     <!-- Primary Meta Tags -->
     <meta name="title" content="DoctorsVideos.video | The Ultimate Health Triage & Medical Database">
-    <meta name="description" content="Access vetted videos from 325+ practicing doctors and get an instant second opinion on any health topic. Search medical debates, self-experimenters, and a 50-state local directory to find care near you.">
+    <meta name="description" content="Watch and compare videos from hundreds of practicing doctors on any health topic. Search by symptom, see different viewpoints side by side, and browse doctors by state.">
     <meta name="keywords" content="health videos, medical triage, local doctors, find a doctor, health protocols, fasting, insulin, metabolic health, doctor debates, self-experimenting doctors">
     <meta name="author" content="DoctorsVideos.video">
     <meta name="robots" content="index, follow">
@@ -15,14 +15,14 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://doctorsvideos.video/">
     <meta property="og:title" content="DoctorsVideos.video | Zero Copays. 1,000+ Perspectives.">
-    <meta property="og:description" content="Bypass the waiting room. Watch vetted doctors debate protocols and find a verified local specialist in all 50 US states.">
+    <meta property="og:description" content="Learn before your appointment. Compare what hundreds of doctors say about symptoms, conditions and treatments, and browse doctors by state.">
     <meta property="og:image" content="https://doctorsvideos.video/og-card.jpg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://doctorsvideos.video/">
     <meta property="twitter:title" content="DoctorsVideos.video | Zero Copays. 1,000+ Perspectives.">
-    <meta property="twitter:description" content="Bypass the waiting room. Watch vetted doctors debate protocols and find a verified local specialist in all 50 US states.">
+    <meta property="twitter:description" content="Learn before your appointment. Compare what hundreds of doctors say about symptoms, conditions and treatments, and browse doctors by state.">
     <meta property="twitter:image" content="https://doctorsvideos.video/og-card.jpg">
 
     <!-- Structured Data JSON-LD Schema (Strictly for Google Bots) -->
@@ -32,7 +32,7 @@
       "@type": "WebSite",
       "name": "DoctorsVideos.video",
       "url": "https://doctorsvideos.video/",
-      "description": "A premiere web platform providing users with access to 1,000+ clinical perspectives, doctor debates, self-experimenter protocols, and a comprehensive 50-state vetted local doctor directory."
+      "description": "A physician video discovery engine that helps people find and compare what many doctors say about symptoms, conditions, treatments and procedures, with a directory of featured doctors by state."
     }
     </script>
     <link rel="stylesheet" href="styles.css">
@@ -40,13 +40,9 @@
 </head>
 <body>
 
-    <!-- RSS / Alert Bar -->
-    <div class="alert-bar">
-        <div class="ticker-content">
-            <span class="alert-badge">⚠️ FLU SEASON ACTIVE</span>
-            <span>Check the Hometown Directory for updated vaccine availability in your state.</span>
-            <span class="breaking-news">📡 BREAKING: New study released on Vitamin D protocols.</span>
-        </div>
+    <!-- Medical disclaimer bar -->
+    <div class="disclaimer-bar" role="note">
+        Educational videos only, not medical advice. In an emergency, call <strong>911</strong>.
     </div>
 
     <!-- Main Navigation -->
@@ -69,7 +65,7 @@
             <a href="experts.html" class="nav-btn">The Experts & Books</a>
             <a href="blog.html" class="nav-btn">Clinical Protocols</a>
             <a href="#" class="nav-btn" id="triage-toggle">AI Triage Desk</a>
-            <a href="#" class="nav-btn highlight-btn">Find Local Doctor</a>
+            <a href="#directory" class="nav-btn highlight-btn">Find Local Doctor</a>
         </div>
     </nav>
 
@@ -86,11 +82,11 @@
     <header class="hero-section">
         <div class="hero-content">
             <h1 class="hero-title">1,000+ Perspectives. <br>Zero Copays.</h1>
-            <p class="hero-subtitle">Bypass the waiting room. Access vetted videos from 325+ practicing doctors and get an instant second opinion on any health topic.</p>
+            <p class="hero-subtitle">Learn before your appointment. Watch and compare what hundreds of practicing doctors say about your symptoms, conditions and treatment options.</p>
 
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="E.g., Try 'Shoulder Pain' or 'Fasting Glucose'">
-                <button class="search-submit">
+                <input type="text" class="search-input" id="hero-search" aria-label="Search health topics" placeholder="E.g., Try 'Shoulder Pain' or 'Fasting Glucose'">
+                <button class="search-submit" id="hero-search-btn" aria-label="Search">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </button>
             </div>
@@ -101,7 +97,6 @@
         <div class="cinema-player-container">
             <div class="cinema-player-wrapper">
                 <iframe class="main-video-player" id="cinema-iframe"
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
                     title="Featured doctor video" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen>
@@ -139,31 +134,31 @@
                 <div class="portal-icon gradient-blue">🧪</div>
                 <h3 class="portal-title">The Self-<br>Experimenters</h3>
                 <p class="portal-desc">Watch doctors test extreme diets, workouts, and cutting-edge protocols directly on themselves to prove the science.</p>
-                <button class="portal-btn">Enter Portal</button>
+                <button class="portal-btn" disabled>Coming soon</button>
             </div>
 
             <div class="portal-card">
                 <div class="portal-icon gradient-purple">🥊</div>
                 <h3 class="portal-title">The<br>Debaters</h3>
                 <p class="portal-desc">See the full picture. Our split-screen cinema viewer lets you watch two experts debate opposing views on critical conditions.</p>
-                <button class="portal-btn">Watch Debates</button>
+                <button class="portal-btn" disabled>Coming soon</button>
             </div>
 
             <div class="portal-card">
                 <div class="portal-icon gradient-green">📍</div>
                 <h3 class="portal-title">Hometown<br>Directory</h3>
-                <p class="portal-desc">Found a doctor you trust? Instantly connect via Phone, Text, or Email to one of our 325 vetted doctors practicing in all 50 states.</p>
-                <button class="portal-btn">Find My State</button>
+                <p class="portal-desc">Found a doctor whose videos you like? Browse the doctors featured on this site by the state where they practice.</p>
+                <a href="#directory" class="portal-btn">Find My State</a>
             </div>
 
         </div>
     </section>
 
     <!-- 50-State Local Directory -->
-    <section class="state-directory-section">
+    <section class="state-directory-section" id="directory">
         <div class="directory-container">
             <h2 class="directory-title">Find Local Doctors by State</h2>
-            <p class="directory-subtitle">Directly access our vetted portals for hometown care.</p>
+            <p class="directory-subtitle">Browse featured doctors by the state where they practice. Doctors appear because they publish educational videos, not because we recommend them.</p>
             <div class="state-grid">
                 <a href="#" class="state-link">Alabama</a> <a href="#" class="state-link">Alaska</a> <a href="#" class="state-link">Arizona</a> <a href="#" class="state-link">Arkansas</a> <a href="#" class="state-link">California</a>
                 <a href="#" class="state-link">Colorado</a> <a href="#" class="state-link">Connecticut</a> <a href="#" class="state-link">Delaware</a> <a href="#" class="state-link">Florida</a> <a href="#" class="state-link">Georgia</a>
@@ -185,6 +180,11 @@
             </div>
         </div>
     </section>
+
+    <footer class="site-footer">
+        <p><strong>DoctorsVideos.video</strong> organizes publicly available videos from doctors so you can compare viewpoints. Content is for education only and is not medical advice, diagnosis or treatment. Always talk to your own doctor. In an emergency call 911; for a mental health crisis call or text 988.</p>
+        <p>Featured doctors are not affiliated with or endorsed by this site, and we do not rank or recommend individual doctors.</p>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="triage-desk.js"></script>
