@@ -1,6 +1,4 @@
-const supabaseUrl = 'https://apodzqtcrlvhrgeluomi.supabase.co';
-const supabaseKey = 'sb_publishable_vYjgL6oVtI_Qdvxs3emGlg_9e-slavK';
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+// Home page. Needs common.js (db, escapeHtml, fetchAllRows, video helpers) loaded first.
 
 const ALL_STATES = [
     'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
@@ -29,33 +27,28 @@ function normalizeState(raw) {
     return STATE_ABBR[value.toUpperCase()] || LOCATION_UNLISTED;
 }
 
-function escapeHtml(text) {
-    return String(text ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
-}
 
 let allVideos = [];
+let totalVideoCount = 0;
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         console.log("Connecting to Supabase...");
 
-        let { data: doctors, error } = await supabaseClient
+        let doctors = await fetchAllRows(() => db
             .from('doctors_final')
             .select('*')
             .or('status.neq.pending,status.is.null')
-            .limit(1000);
-
-        if (error) throw error;
+            .order('id'));
 
         console.log(`Fetched ${doctors.length} doctors from live Supabase database!`);
 
-        let { data: videos, error: vidError } = await supabaseClient
+        // Only the columns the home page needs, paged past Supabase's 1,000-row limit.
+        allVideos = await fetchAllRows(() => db
             .from('videos')
-            .select('*')
-            .limit(10000);
-
-        if (vidError) throw vidError;
-        allVideos = videos || [];
+            .select('doctor_id, youtube_video_id')
+            .order('id'));
+        totalVideoCount = allVideos.length;
 
         console.log(`Fetched ${allVideos.length} videos from live Supabase database!`);
 
@@ -68,11 +61,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 name: doc['Channel Name'] || doc.doctor_name || doc.Channel_Name || "Doctor",
                 state: state,
                 specialty: doc['Specialty'] || doc.specialty || "Medical Expert",
+                raw: doc,
                 video_url: doc['Channel URL'] || doc.video_url || doc.Channel_URL
             };
         });
 
         window.allDoctors = doctors;
+        window.doctorsById = new Map(doctors.map(d => [d.db_id, d]));
+        loadNewVideos();
+        loadTopics();
 
         populateUI(doctors);
         populateStats(doctors);
@@ -98,7 +95,7 @@ function populateStats(doctors) {
     const statSpecialties = document.getElementById('stat-specialties');
 
     if (statDoctors) statDoctors.textContent = doctors.length.toLocaleString();
-    if (statVideos) statVideos.textContent = allVideos.length.toLocaleString();
+    if (statVideos) statVideos.textContent = totalVideoCount.toLocaleString();
 
     if (statSpecialties) {
         const uniqueSpecialties = new Set(doctors.map(d => d.specialty).filter(Boolean));
@@ -211,4 +208,64 @@ function renderDoctorCards(doctors, label, type = 'state') {
     });
 
     resultsHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// "New videos this week": the newest videos doctors have published (last 7 days, or the latest 8).
+async function loadNewVideos() {
+    const grid = document.getElementById('new-videos-grid');
+    if (!grid) return;
+    try {
+        const { data, error } = await db
+            .from('videos')
+            .select('id, doctor_id, youtube_video_id, title, thumbnail_url, published_at')
+            .not('youtube_video_id', 'is', null)
+            .order('published_at', { ascending: false, nullsFirst: false })
+            .limit(24);
+        if (error) throw error;
+        const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
+        const recent = (data || []).filter(v => new Date(v.published_at).getTime() >= weekAgo);
+        const heading = document.getElementById('new-videos-title');
+        if (heading && recent.length < 4) heading.textContent = 'Latest Doctor Videos';
+        const list = (recent.length >= 4 ? recent : (data || [])).slice(0, 8);
+        const byId = window.doctorsById || new Map();
+        grid.innerHTML = list.map(v => videoCardHtml(v, byId.get(v.doctor_id)?.raw)).join('');
+        document.getElementById('new-videos-section').hidden = list.length === 0;
+    } catch (err) {
+        console.warn('Could not load new videos', err);
+    }
+}
+
+// Topics power the topic buttons, search suggestions and topic pages.
+async function loadTopics() {
+    try {
+        const { data, error } = await db.from('topics').select('id, name, slug, category, featured').order('name');
+        if (error) throw error;
+        window.allTopics = data || [];
+    } catch (err) {
+        console.warn('Could not load topics', err);
+        window.allTopics = [];
+    }
+    // Popular topic buttons go straight to their topic page when one exists.
+    document.querySelectorAll('.topic-chip').forEach(chip => {
+        const topic = findTopic(chip.dataset.topic);
+        if (topic) chip.dataset.href = topicUrl(topic);
+    });
+}
+
+function normalizeTopicText(text) {
+    return String(text || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/s\b/g, '').trim();
+}
+
+function findTopic(text) {
+    const wanted = normalizeTopicText(text);
+    return (window.allTopics || []).find(t => normalizeTopicText(t.name) === wanted || normalizeTopicText(t.slug) === wanted);
+}
+
+// Topics whose name appears in what the visitor typed (or the other way round).
+function matchTopics(text, max = 4) {
+    const query = normalizeTopicText(text);
+    if (!query) return [];
+    return (window.allTopics || [])
+        .filter(t => { const n = normalizeTopicText(t.name); return n && (query.includes(n) || n.includes(query)); })
+        .slice(0, max);
 }

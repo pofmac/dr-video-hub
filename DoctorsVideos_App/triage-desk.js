@@ -65,6 +65,16 @@ function renderTriageResponse(userText) {
         </div>` : '';
     const noteHtml = `<div class="triage-note">This only points you to the kind of doctor who covers a topic. It is not medical advice.</div>`;
 
+    const topics = typeof matchTopics === 'function' ? matchTopics(userText) : [];
+    const topicsHtml = topics.length ? `
+        <div class="triage-bot-msg">Videos on this topic:</div>
+        <div class="triage-topics">${topics.map(t => `<a class="triage-topic-link" href="${escapeHtml(topicUrl(t))}">${escapeHtml(t.name)} →</a>`).join('')}</div>` : '';
+
+    if (matchGroups.length === 0 && topics.length) {
+        responseEl.innerHTML = `${emergencyHtml}${topicsHtml}${noteHtml}`;
+        return;
+    }
+
     if (matchGroups.length === 0) {
         responseEl.innerHTML = `${emergencyHtml}
             <div class="triage-bot-msg">
@@ -82,7 +92,7 @@ function renderTriageResponse(userText) {
                 </button>`;
     }).join('');
 
-    responseEl.innerHTML = `${emergencyHtml}
+    responseEl.innerHTML = `${emergencyHtml}${topicsHtml}
         <div class="triage-bot-msg">
             These doctors talk about that. Pick one to see who's on the site:
         </div>
@@ -118,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Popular topic buttons fill the search box and run the search.
     document.querySelectorAll('.topic-chip').forEach(chip => {
         chip.addEventListener('click', () => {
+            if (chip.dataset.href) { location.href = chip.dataset.href; return; }
             if (heroInput) heroInput.value = chip.textContent.trim();
             runSearch(chip.dataset.topic);
         });

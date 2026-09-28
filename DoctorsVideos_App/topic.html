@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Videos by Topic | DoctorsVideos.video</title>
+    <meta name="description" content="Compare what many different doctors say about this topic in short videos.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="disclaimer-bar" role="note">
+        Educational videos only, not medical advice. In an emergency, call <strong>911</strong>.
+    </div>
+
+    <nav class="navbar">
+        <div class="logo-container">
+            <div class="logo-mark">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#blueGreenGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <defs>
+                        <linearGradient id="blueGreenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#0ea5e9" />
+                            <stop offset="100%" stop-color="#10b981" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                </svg>
+            </div>
+            <span class="logo-text">DoctorsVideos<span class="logo-accent">.video</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="topics.html" class="nav-btn">Topics</a>
+            <a href="experts.html" class="nav-btn">Doctors</a>
+            <a href="blog.html" class="nav-btn">Articles</a>
+            <a href="index.html#directory" class="nav-btn highlight-btn">Find a Doctor Near Me</a>
+        </div>
+    </nav>
+
+    <main class="page-main topic-page">
+        <p class="breadcrumb"><a href="topics.html">← All topics</a></p>
+        <p class="topic-category" id="topic-category"></p>
+        <h1 class="page-title" id="topic-title">Loading...</h1>
+        <p class="page-lede" id="topic-description"></p>
+
+        <div class="topic-layout">
+            <div class="topic-content">
+                <section id="viewpoints-section" hidden>
+                    <h2>What different doctors say</h2>
+                    <p class="section-note">Doctors don't always agree. These summaries are shown in alphabetical order by doctor, not ranked.</p>
+                    <div id="viewpoints-list" class="viewpoints-list"></div>
+                </section>
+
+                <section>
+                    <h2 id="topic-videos-title">Videos</h2>
+                    <div id="topic-videos" class="video-grid"><p class="page-status">Loading videos...</p></div>
+                    <button id="topic-more" class="load-more" hidden>Show more videos</button>
+                </section>
+
+                <section id="related-section" hidden>
+                    <h2>Related topics</h2>
+                    <div id="related-topics" class="topic-chips topic-chips-left"></div>
+                </section>
+            </div>
+            <aside class="topic-aside">
+                <div class="ad-slot ad-box" data-ad-slot="topic-sponsor"></div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p><strong>DoctorsVideos.video</strong> organizes publicly available videos from doctors so you can compare viewpoints. Content is for education only and is not medical advice, diagnosis or treatment. Always talk to your own doctor. In an emergency call 911; for a mental health crisis call or text 988.</p>
+        <p>Featured doctors are not affiliated with or endorsed by this site, and we do not rank or recommend individual doctors.</p>
+        <p><a href="advertise.html">Advertise with us</a></p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="common.js"></script>
+    <script src="ads.js"></script>
+    <script src="topic.js"></script>
+</body>
+</html>

@@ -62,7 +62,7 @@
             <span class="logo-text">DoctorsVideos<span class="logo-accent">.video</span></span>
         </div>
         <div class="nav-links">
-            <a href="#topics" class="nav-btn">Topics</a>
+            <a href="topics.html" class="nav-btn">Topics</a>
             <a href="experts.html" class="nav-btn">Doctors</a>
             <a href="blog.html" class="nav-btn">Articles</a>
             <a href="#directory" class="nav-btn highlight-btn">Find a Doctor Near Me</a>
@@ -124,6 +124,12 @@
             </div>
         </div>
     </header>
+
+    <section class="new-videos-section" id="new-videos-section" hidden>
+        <h2 class="section-title" id="new-videos-title">New Doctor Videos This Week</h2>
+        <div class="video-grid" id="new-videos-grid"></div>
+        <p class="section-more"><a href="topics.html">Browse all topics →</a></p>
+    </section>
 
     <div class="ad-slot ad-banner" data-ad-slot="home-banner"></div>
 
@@ -190,6 +196,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="common.js"></script>
     <script src="ads.js"></script>
     <script src="triage-desk.js"></script>
     <script src="app.js"></script>
