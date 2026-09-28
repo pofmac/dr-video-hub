@@ -529,3 +529,52 @@ a.portal-btn {
 .triage-suggestion-btn:hover {
     background: #0284c7;
 }
+
+/* Popular topic buttons under the search box */
+.topic-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.topic-chips-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-right: 4px;
+}
+
+.topic-chip {
+    background: #fff;
+    border: 1px solid var(--border-light);
+    color: var(--text-main);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.topic-chip:hover {
+    border-color: var(--brand-blue);
+    color: var(--brand-blue-dark);
+}
+
+/* Search results shown right under the search box */
+.search-results {
+    max-width: 640px;
+    margin: 20px auto 0;
+    background: #fff;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 18px 20px;
+    text-align: left;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.06);
+}
+
+.search-results .triage-bot-msg {
+    color: var(--text-main);
+}
