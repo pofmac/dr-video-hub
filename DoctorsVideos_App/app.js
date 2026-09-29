@@ -220,13 +220,22 @@ async function loadNewVideos() {
             .select('id, doctor_id, youtube_video_id, title, thumbnail_url, published_at')
             .not('youtube_video_id', 'is', null)
             .order('published_at', { ascending: false, nullsFirst: false })
-            .limit(24);
+            .limit(150);
         if (error) throw error;
+        // Only videos the classifier tagged with a health topic (drops channel news, promos, etc.).
+        let tagged = new Set();
+        const ids = (data || []).map(v => v.id);
+        if (ids.length) {
+            const { data: links, error: linkError } = await db.from('video_topics').select('video_id').in('video_id', ids);
+            if (linkError) throw linkError;
+            tagged = new Set((links || []).map(l => l.video_id));
+        }
+        const healthVideos = (data || []).filter(v => tagged.has(v.id));
         const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
-        const recent = (data || []).filter(v => new Date(v.published_at).getTime() >= weekAgo);
+        const recent = healthVideos.filter(v => new Date(v.published_at).getTime() >= weekAgo);
         const heading = document.getElementById('new-videos-title');
         if (heading && recent.length < 4) heading.textContent = 'Latest Doctor Videos';
-        const list = (recent.length >= 4 ? recent : (data || [])).slice(0, 8);
+        const list = (recent.length >= 4 ? recent : healthVideos).slice(0, 8);
         const byId = window.doctorsById || new Map();
         grid.innerHTML = list.map(v => videoCardHtml(v, byId.get(v.doctor_id)?.raw)).join('');
         document.getElementById('new-videos-section').hidden = list.length === 0;
