@@ -34,8 +34,42 @@ function isEnglishFriendlyVideo(video) {
     return !INDIC_SCRIPT.test(video?.title || '');
 }
 
+// US states, used to group doctors by where they practice.
+const ALL_STATES = [
+    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
+    'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland',
+    'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey',
+    'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
+    'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+];
+
+const STATE_ABBR = {
+    AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California', CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia',
+    HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa', KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland',
+    MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MS: 'Mississippi', MO: 'Missouri', MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey',
+    NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio', OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina',
+    SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming'
+};
+
+// Doctors whose state is blank or outside the US are grouped here instead of being given a made-up state.
+const LOCATION_UNLISTED = 'Location not listed';
+
+function normalizeState(raw) {
+    const value = (raw || '').trim();
+    if (!value) return LOCATION_UNLISTED;
+    const byName = ALL_STATES.find(s => s.toLowerCase() === value.toLowerCase());
+    if (byName) return byName;
+    return STATE_ABBR[value.toUpperCase()] || LOCATION_UNLISTED;
+}
+
 function doctorDisplayName(doc) {
     return String(doc?.['Channel Name'] || doc?.doctor_name || doc?.name || 'Doctor').replace(/"/g, '').trim();
+}
+
+// Two letters for a doctor's round badge, skipping titles like "Dr".
+function doctorInitials(name) {
+    const words = String(name || '').replace(/^(dr\.?|doctor)\s+/i, '').split(/\s+/).filter(w => /^[a-z]/i.test(w));
+    return ((words[0]?.[0] || 'D') + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase();
 }
 
 function topicUrl(topic) {
@@ -54,7 +88,7 @@ function videoCardHtml(video, doctor) {
     return `
         <button class="video-card" data-youtube-id="${escapeHtml(video.youtube_video_id)}"
                 data-title="${escapeHtml(video.title)}" data-doctor="${escapeHtml(doctor ? doctorDisplayName(doctor) : '')}">
-            <img src="${escapeHtml(thumb)}" alt="" loading="lazy">
+            <span class="video-thumb"><img src="${escapeHtml(thumb)}" alt="" loading="lazy"><span class="video-play" aria-hidden="true"></span></span>
             <span class="video-card-title">${escapeHtml(video.title || 'Doctor video')}</span>
             <span class="video-card-meta">${escapeHtml(doctor ? doctorDisplayName(doctor) : '')}${video.published_at ? ' · ' + escapeHtml(formatDate(video.published_at)) : ''}</span>
         </button>`;

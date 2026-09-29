@@ -1,33 +1,5 @@
 // Home page. Needs common.js (db, escapeHtml, fetchAllRows, video helpers) loaded first.
 
-const ALL_STATES = [
-    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
-    'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland',
-    'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey',
-    'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
-    'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-];
-
-const STATE_ABBR = {
-    AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California', CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia',
-    HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa', KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland',
-    MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MS: 'Mississippi', MO: 'Missouri', MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey',
-    NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio', OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina',
-    SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming'
-};
-
-// Doctors whose state is blank or outside the US are grouped here instead of being given a made-up state.
-const LOCATION_UNLISTED = 'Location not listed';
-
-function normalizeState(raw) {
-    const value = (raw || '').trim();
-    if (!value) return LOCATION_UNLISTED;
-    const byName = ALL_STATES.find(s => s.toLowerCase() === value.toLowerCase());
-    if (byName) return byName;
-    return STATE_ABBR[value.toUpperCase()] || LOCATION_UNLISTED;
-}
-
-
 let allVideos = [];
 let totalVideoCount = 0;
 
@@ -117,7 +89,7 @@ function setupStateGrid(doctors) {
         a.className = 'state-link';
 
         if (stateDoctors.length > 0) {
-            a.innerHTML = `${state} <span class="doc-count" style="background:#ff4757; color:white; font-size:0.75rem; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">${stateDoctors.length}</span>`;
+            a.innerHTML = `<span>${state}</span> <span class="doc-count">${stateDoctors.length}</span>`;
 
             a.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -148,12 +120,12 @@ function renderDoctorCards(doctors, label, type = 'state') {
 
     if(!resultsContainer) return;
 
-    resultsHeader.style.display = 'block';
-    resultsContainer.style.display = 'flex';
+    resultsHeader.hidden = false;
+    resultsContainer.hidden = false;
 
     const prefix = type === 'specialty' ? 'Featured' : (label === LOCATION_UNLISTED ? 'Featured Doctors:' : 'Featured Doctors in');
     const suffix = type === 'specialty' ? 'Doctors' : '';
-    resultsTitle.innerHTML = `<span style="color:#fff;">${prefix}</span> <span style="background: -webkit-linear-gradient(#0ea5e9, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${escapeHtml(label)}</span> <span style="color:#fff;">${suffix}</span>`;
+    resultsTitle.innerHTML = `${prefix} <span class="grad-text">${escapeHtml(label)}</span> ${suffix}`;
 
     resultsContainer.innerHTML = (type === 'state' && label !== LOCATION_UNLISTED && typeof stateSponsorCardHtml === 'function')
         ? stateSponsorCardHtml(label) : '';
@@ -163,11 +135,12 @@ function renderDoctorCards(doctors, label, type = 'state') {
         card.className = 'doctor-card';
 
         const cleanedName = doc.name.replace(/"/g, '').trim();
-        const specialty = doc.specialty ? doc.specialty.toUpperCase() : 'MEDICAL EXPERT';
+        const specialty = doc.specialty || 'Medical expert';
         const hasVideo = !!getVideoForDoctor(doc.db_id);
 
         card.innerHTML = `
             <div class="card-inner">
+                <div class="doctor-avatar" aria-hidden="true">${escapeHtml(doctorInitials(cleanedName))}</div>
                 <div class="card-specialty">${escapeHtml(specialty)}</div>
                 <h3 class="card-name">${escapeHtml(cleanedName)}</h3>
                 <div class="card-state">📍 ${escapeHtml(doc.state)}</div>
