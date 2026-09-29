@@ -81,14 +81,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.allDoctors = [];
         const grid = document.querySelector('.state-grid');
         if (grid) grid.innerHTML = '<p class="directory-subtitle">The doctor directory could not be loaded right now. Please refresh the page or try again later.</p>';
-        const caption = document.getElementById('cinema-caption');
-        if (caption) caption.textContent = 'Videos could not be loaded right now.';
     }
 });
 
 function populateUI(doctors) {
     setupStateGrid(doctors);
-    setupCinemaPlayer(doctors);
 }
 
 function populateStats(doctors) {
@@ -138,32 +135,10 @@ function getVideoForDoctor(dbId) {
     return allVideos.find(v => v.doctor_id === dbId);
 }
 
-function playVideoInCinema(doctor) {
-    const iframe = document.getElementById('cinema-iframe');
-    const caption = document.getElementById('cinema-caption');
+// Videos only play when a visitor clicks one, in the pop-up player.
+function playDoctorVideo(doctor) {
     const video = getVideoForDoctor(doctor.db_id);
-
-    if (iframe && video && video.youtube_video_id) {
-        iframe.src = `https://www.youtube.com/embed/${video.youtube_video_id}?autoplay=1`;
-    }
-
-    if (caption) {
-        caption.innerHTML = `<span class="live-pulse"></span><strong>Now Playing:</strong> ${escapeHtml(doctor.name)} - ${escapeHtml(doctor.specialty)}`;
-    }
-
-    document.querySelector('.cinema-player-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function setupCinemaPlayer(doctors) {
-    const doctorsWithVideos = doctors.filter(d => getVideoForDoctor(d.db_id));
-    if (doctorsWithVideos.length === 0) {
-        const caption = document.getElementById('cinema-caption');
-        if (caption) caption.textContent = 'Featured videos are coming soon.';
-        return;
-    }
-
-    const randomDoc = doctorsWithVideos[Math.floor(Math.random() * doctorsWithVideos.length)];
-    playVideoInCinema(randomDoc);
+    if (video && video.youtube_video_id) openVideoPlayer(video.youtube_video_id, video.title, doctor.name);
 }
 
 function renderDoctorCards(doctors, label, type = 'state') {
@@ -203,7 +178,7 @@ function renderDoctorCards(doctors, label, type = 'state') {
         `;
 
         if (hasVideo) {
-            card.querySelector('.card-btn').addEventListener('click', () => playVideoInCinema(doc));
+            card.querySelector('.card-btn').addEventListener('click', () => playDoctorVideo(doc));
         }
 
         resultsContainer.appendChild(card);
