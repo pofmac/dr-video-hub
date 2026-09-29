@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         let doctors = await fetchAllRows(() => db
             .from('doctors_final')
             .select('*')
-            .or('status.neq.pending,status.is.null')
+            .or(VISIBLE_DOCTOR_FILTER)
             .order('id'));
 
         console.log(`Fetched ${doctors.length} doctors from live Supabase database!`);
@@ -46,8 +46,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Only the columns the home page needs, paged past Supabase's 1,000-row limit.
         allVideos = await fetchAllRows(() => db
             .from('videos')
-            .select('doctor_id, youtube_video_id')
+            .select('doctor_id, youtube_video_id, title')
             .order('id'));
+        const visibleIds = new Set(doctors.map(d => d.id));
+        allVideos = allVideos.filter(v => visibleIds.has(v.doctor_id) && isEnglishFriendlyVideo(v));
         totalVideoCount = allVideos.length;
 
         console.log(`Fetched ${allVideos.length} videos from live Supabase database!`);
@@ -230,7 +232,9 @@ async function loadNewVideos() {
             if (linkError) throw linkError;
             tagged = new Set((links || []).map(l => l.video_id));
         }
-        const healthVideos = (data || []).filter(v => tagged.has(v.id));
+        const visibleDoctors = window.doctorsById || new Map();
+        const healthVideos = (data || []).filter(v => tagged.has(v.id)
+            && visibleDoctors.has(v.doctor_id) && isEnglishFriendlyVideo(v));
         const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
         const recent = healthVideos.filter(v => new Date(v.published_at).getTime() >= weekAgo);
         const heading = document.getElementById('new-videos-title');

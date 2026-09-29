@@ -41,9 +41,9 @@ function showMoreVideos() {
 async function loadDoctors(ids) {
     const unique = [...new Set(ids)].filter(id => id != null);
     for (let i = 0; i < unique.length; i += 200) {
-        const { data, error } = await db.from('doctors_final').select('id, "Channel Name", "Specialty"').in('id', unique.slice(i, i + 200));
+        const { data, error } = await db.from('doctors_final').select('id, "Channel Name", "Specialty", status').in('id', unique.slice(i, i + 200));
         if (error) throw error;
-        (data || []).forEach(d => topicDoctors.set(d.id, d));
+        (data || []).filter(isVisibleDoctor).forEach(d => topicDoctors.set(d.id, d));
     }
 }
 
@@ -106,12 +106,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             loadRelated(topic).catch(() => []),
         ]);
         await loadDoctors([...videos.map(v => v.doctor_id), ...viewpoints.map(v => v.doctor_id)]);
+        // Leave out hidden doctors and videos with Hindi / other Indian-script titles.
+        const shownVideos = videos.filter(v => topicDoctors.has(v.doctor_id) && isEnglishFriendlyVideo(v));
+        const shownViewpoints = viewpoints.filter(vp => topicDoctors.has(vp.doctor_id));
 
         // Viewpoints, alphabetical by doctor so nobody is "ranked".
-        if (viewpoints.length) {
-            const videoById = new Map(videos.map(v => [v.id, v]));
-            viewpoints.sort((a, b) => doctorDisplayName(topicDoctors.get(a.doctor_id)).localeCompare(doctorDisplayName(topicDoctors.get(b.doctor_id))));
-            document.getElementById('viewpoints-list').innerHTML = viewpoints.map(vp => {
+        if (shownViewpoints.length) {
+            const videoById = new Map(shownVideos.map(v => [v.id, v]));
+            shownViewpoints.sort((a, b) => doctorDisplayName(topicDoctors.get(a.doctor_id)).localeCompare(doctorDisplayName(topicDoctors.get(b.doctor_id))));
+            document.getElementById('viewpoints-list').innerHTML = shownViewpoints.map(vp => {
                 const doc = topicDoctors.get(vp.doctor_id);
                 const video = videoById.get(vp.video_id);
                 return `
@@ -124,7 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('viewpoints-section').hidden = false;
         }
 
-        topicVideos = mixByDoctor(videos);
+        topicVideos = mixByDoctor(shownVideos);
         const doctorCount = new Set(topicVideos.map(v => v.doctor_id)).size;
         document.getElementById('topic-videos-title').textContent =
             topicVideos.length ? `Videos from ${doctorCount} doctor${doctorCount === 1 ? '' : 's'}` : 'Videos';

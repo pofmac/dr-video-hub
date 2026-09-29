@@ -19,6 +19,21 @@ async function fetchAllRows(buildQuery, pageSize = 1000) {
     }
 }
 
+// Doctors with one of these statuses never appear on the site ('hidden' = removed by the owner).
+const HIDDEN_DOCTOR_STATUSES = ['pending', 'hidden'];
+const VISIBLE_DOCTOR_FILTER = `status.is.null,status.not.in.(${HIDDEN_DOCTOR_STATUSES.join(',')})`;
+
+function isVisibleDoctor(doc) {
+    return !!doc && !HIDDEN_DOCTOR_STATUSES.includes(String(doc.status || '').toLowerCase());
+}
+
+// Titles written in Hindi or other Indian scripts (Devanagari through Sinhala) are skipped.
+const INDIC_SCRIPT = /[\u0900-\u0DFF]/;
+
+function isEnglishFriendlyVideo(video) {
+    return !INDIC_SCRIPT.test(video?.title || '');
+}
+
 function doctorDisplayName(doc) {
     return String(doc?.['Channel Name'] || doc?.doctor_name || doc?.name || 'Doctor').replace(/"/g, '').trim();
 }
