@@ -1,0 +1,49 @@
+# Adds a doctor's YouTube channel and videos to the database.
+# GitHub > Actions > "Add a doctor from YouTube" > Run workflow.
+# Needs two repository secrets: YOUTUBE_API_KEY and SUPABASE_SECRET_KEY.
+name: Add a doctor from YouTube
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "YouTube channel (@handle or link), e.g. @FootDoctorZach"
+        required: true
+      specialty:
+        description: "Specialty, e.g. Podiatrist"
+        required: true
+      state:
+        description: "US state where they practice, e.g. Ohio (leave blank if unknown)"
+        required: false
+        default: ""
+      name:
+        description: "Name to show on the site (leave blank to use the channel name)"
+        required: false
+        default: ""
+      dry_run:
+        description: "Test only: show what would be added, save nothing"
+        type: boolean
+        default: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Add doctor and videos
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          CHANNEL: ${{ inputs.channel }}
+          SPECIALTY: ${{ inputs.specialty }}
+          STATE: ${{ inputs.state }}
+          NAME: ${{ inputs.name }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          args=("$CHANNEL" --specialty "$SPECIALTY" --state "$STATE" --name "$NAME")
+          if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          python3 tools/import_channel.py "${args[@]}"
