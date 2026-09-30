@@ -14,6 +14,7 @@
     { keywords: ['kidney stones', 'urinary'], specialtyMatch: ['urolog', 'kidney'] },
     { keywords: ['sleep', 'insomnia', 'snoring'], specialtyMatch: ['sleep'] },
     { keywords: ['pregnancy', 'fertility'], specialtyMatch: ['ob/gyn', 'obstetric', 'gynecolog', 'fertility'] },
+    { keywords: ['foot', 'feet', 'heel', 'plantar', 'bunion', 'toenail', 'big toe', 'ankle', 'arch pain', 'flat feet', 'neuropathy in feet', 'running shoes', 'shoe'], specialtyMatch: ['podiat', 'foot', 'ankle'] },
 ];
 
 // Phrases that should always get an emergency message first.
@@ -27,7 +28,7 @@ const EMERGENCY_KEYWORDS = [
 const SPECIALTY_LABELS = {
     neuro: 'neurology', cardio: 'heart', pulmon: 'lung', 'internal medicine': 'primary care', orthoped: 'bone & joint',
     gastro: 'digestive', psychiat: 'mental health', endocrin: 'hormone & diabetes', dermatolog: 'skin', ent: 'ear, nose & throat',
-    urolog: 'urology', sleep: 'sleep', 'ob/gyn': "women's health"
+    urolog: 'urology', sleep: 'sleep', 'ob/gyn': "women's health", podiat: 'foot & ankle'
 };
 
 function isEmergency(userText) {
