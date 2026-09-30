@@ -1074,3 +1074,7 @@ a.topic-chip { text-decoration: none; display: inline-block; }
 .qa-hub-card ul { list-style: none; display: grid; gap: 6px; }
 .qa-hub-card li a { color: var(--brand-dark); text-decoration: none; font-size: 0.95rem; }
 .qa-hub-card li a:hover { text-decoration: underline; }
+
+/* ---------- Specialty guides ---------- */
+.guide-videos .video-grid { margin-top: 12px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.video-grid > .page-status, .doctor-grid > .page-status { grid-column: 1 / -1; }

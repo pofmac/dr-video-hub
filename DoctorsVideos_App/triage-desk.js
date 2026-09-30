@@ -17,6 +17,12 @@
     { keywords: ['foot', 'feet', 'heel', 'plantar', 'bunion', 'toenail', 'big toe', 'ankle', 'arch pain', 'flat feet', 'neuropathy in feet', 'running shoes', 'shoe'], specialtyMatch: ['podiat', 'foot', 'ankle'] },
 ];
 
+// Specialty guide pages suggested when a search mentions that body area.
+const GUIDE_LINKS = [
+    { re: /\b(knee|knees|hip|hips|acl|meniscus)\b/i, name: 'Hip & Knee guide', href: 'hip-and-knee.html' },
+    { re: /\b(foot|feet|heel|ankle|toe|toes|toenail|plantar|bunion|achilles|arch)\b/i, name: 'Foot & Ankle guide', href: 'foot-and-ankle.html' },
+];
+
 // Phrases that should always get an emergency message first.
 const EMERGENCY_KEYWORDS = [
     'chest pain', "can't breathe", 'cant breathe', 'trouble breathing', 'difficulty breathing', 'stroke',
@@ -66,7 +72,8 @@ function renderTriageResponse(userText) {
         </div>` : '';
     const noteHtml = `<div class="triage-note">This only points you to the kind of doctor who covers a topic. It is not medical advice.</div>`;
 
-    const topics = typeof matchTopics === 'function' ? matchTopics(userText) : [];
+    const topics = (typeof matchTopics === 'function' ? matchTopics(userText) : [])
+        .concat(GUIDE_LINKS.filter(g => g.re.test(userText)).map(g => ({ name: g.name, href: g.href })));
     const topicsHtml = topics.length ? `
         <div class="triage-bot-msg">Videos on this topic:</div>
         <div class="triage-topics">${topics.map(t => `<a class="triage-topic-link" href="${escapeHtml(topicUrl(t))}">${escapeHtml(t.name)} →</a>`).join('')}</div>` : '';

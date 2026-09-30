@@ -68,6 +68,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('doctor-specialty').insertAdjacentHTML('beforeend',
             specialties.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s.charAt(0).toUpperCase() + s.slice(1))}</option>`).join(''));
 
+        // Links from other pages from other pages can pre-fill the search: experts.html?q=Biernacki
+        const preset = new URLSearchParams(location.search).get('q');
+        if (preset) document.getElementById('doctor-search').value = preset;
         document.getElementById('doctor-search').addEventListener('input', applyFilters);
         document.getElementById('doctor-specialty').addEventListener('change', applyFilters);
         document.getElementById('doctor-more').addEventListener('click', showMoreDoctors);

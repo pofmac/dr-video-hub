@@ -73,6 +73,7 @@ function doctorInitials(name) {
 }
 
 function topicUrl(topic) {
+    if (topic.href) return topic.href;
     return `topic.html?slug=${encodeURIComponent(topic.slug)}`;
 }
 
