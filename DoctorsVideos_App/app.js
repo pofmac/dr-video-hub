@@ -103,16 +103,6 @@ function setupStateGrid(doctors) {
     });
 }
 
-function getVideoForDoctor(dbId) {
-    return allVideos.find(v => v.doctor_id === dbId);
-}
-
-// Videos only play when a visitor clicks one, in the pop-up player.
-function playDoctorVideo(doctor) {
-    const video = getVideoForDoctor(doctor.db_id);
-    if (video && video.youtube_video_id) openVideoPlayer(video.youtube_video_id, video.title, doctor.name);
-}
-
 function renderDoctorCards(doctors, label, type = 'state') {
     const resultsHeader = document.getElementById('doctor-results-header');
     const resultsTitle = document.getElementById('doctor-results-title');
@@ -136,7 +126,7 @@ function renderDoctorCards(doctors, label, type = 'state') {
 
         const cleanedName = doc.name.replace(/"/g, '').trim();
         const specialty = doc.specialty || 'Medical expert';
-        const hasVideo = !!getVideoForDoctor(doc.db_id);
+        const videoCount = allVideos.filter(v => v.doctor_id === doc.db_id).length;
 
         card.innerHTML = `
             <div class="card-inner">
@@ -145,14 +135,9 @@ function renderDoctorCards(doctors, label, type = 'state') {
                 <h3 class="card-name">${escapeHtml(cleanedName)}</h3>
                 <div class="card-state">📍 ${escapeHtml(doc.state)}</div>
             </div>
-            <button class="card-btn" ${hasVideo ? '' : 'disabled'}>
-                ${hasVideo ? '▶ Watch Video' : 'No Video Yet'}
-            </button>
+            ${videoCount ? `<a class="card-btn" href="doctor.html?id=${encodeURIComponent(doc.db_id)}">▶ See all ${videoCount} video${videoCount === 1 ? '' : 's'}</a>`
+                         : '<button class="card-btn" disabled>No videos yet</button>'}
         `;
-
-        if (hasVideo) {
-            card.querySelector('.card-btn').addEventListener('click', () => playDoctorVideo(doc));
-        }
 
         resultsContainer.appendChild(card);
     });

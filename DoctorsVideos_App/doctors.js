@@ -16,9 +16,8 @@ function doctorCardHtml(doc) {
                 <h3 class="card-name">${escapeHtml(doc.name)}</h3>
                 <div class="card-state">📍 ${escapeHtml(doc.state)} · ${count} video${count === 1 ? '' : 's'}</div>
             </div>
-            <button class="card-btn" data-doctor-id="${escapeHtml(doc.id)}" ${count ? '' : 'disabled'}>
-                ${count ? '▶ Watch a video' : 'No videos yet'}
-            </button>
+            ${count ? `<a class="card-btn" href="doctor.html?id=${encodeURIComponent(doc.id)}">▶ See all ${count} video${count === 1 ? '' : 's'}</a>`
+                    : '<button class="card-btn" disabled>No videos yet</button>'}
         </div>`;
 }
 
@@ -79,13 +78,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error(err);
         grid.innerHTML = '<p class="page-status">The doctor list could not be loaded right now. Please refresh the page.</p>';
     }
-});
-
-// "Watch a video" opens one of that doctor's videos in the pop-up player.
-document.addEventListener('click', e => {
-    const btn = e.target.closest('.card-btn[data-doctor-id]');
-    if (!btn) return;
-    const doc = directory.find(d => String(d.id) === btn.dataset.doctorId);
-    const video = doc && doc.videos[0];
-    if (video) openVideoPlayer(video.youtube_video_id, video.title, doc.name);
 });

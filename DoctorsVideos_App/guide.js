@@ -28,7 +28,7 @@ function guideDoctorCard(doc) {
                 <h3 class="card-name">${escapeHtml(name)}</h3>
                 <div class="card-state">📍 ${escapeHtml(normalizeState(doc.State))}</div>
             </div>
-            <a class="card-btn" href="experts.html?q=${encodeURIComponent(name)}">See their videos</a>
+            <a class="card-btn" href="doctor.html?id=${encodeURIComponent(doc.id)}">▶ See their videos</a>
         </div>`;
 }
 
