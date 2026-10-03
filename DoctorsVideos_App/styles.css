@@ -343,6 +343,39 @@ a.topic-chip { text-decoration: none; display: inline-block; }
 .topic-chip-featured { border-color: #bae6fd; color: var(--brand-dark); font-weight: 600; }
 .topic-chips-left { justify-content: flex-start; margin-top: 0; }
 
+/* ---------- "Not sure what to search?" question links (home hero) ---------- */
+.try-questions {
+    max-width: 760px;
+    margin: 22px auto 0;
+    padding: 16px 18px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    text-align: left;
+}
+.try-questions-label { margin: 0 0 10px; font-weight: 600; color: var(--ink); }
+.try-questions-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 6px 18px;
+}
+.try-questions-list a {
+    display: block;
+    padding: 6px 0 6px 22px;
+    position: relative;
+    color: var(--brand-dark);
+    text-decoration: none;
+    font-size: 0.97rem;
+    line-height: 1.35;
+}
+.try-questions-list a::before { content: "?"; position: absolute; left: 0; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg-tint); color: var(--brand-dark); font: 700 0.72rem/16px var(--font-body); text-align: center; }
+.try-questions-list a:hover { text-decoration: underline; }
+.try-questions-more { display: inline-block; margin-top: 10px; font-weight: 600; color: var(--brand-dark); text-decoration: none; }
+.try-questions-more:hover { text-decoration: underline; }
+
 /* ---------- Search results under the search box ---------- */
 .search-results {
     max-width: 660px;
