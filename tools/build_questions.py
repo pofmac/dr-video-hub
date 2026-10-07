@@ -12,8 +12,10 @@ import json
 import re
 from pathlib import Path
 
+from sources import CALORIE_SOURCES, CONDITION_SOURCES, DIET_STUDIES, sources_section
+
 APP = Path(__file__).resolve().parent.parent / "DoctorsVideos_App"
-UPDATED = "September 2026"
+UPDATED = "October 2026"
 
 DIETS = [
     {
@@ -425,10 +427,10 @@ def build_condition(cond):
                     <h2>Other health questions</h2>
                     <div class="topic-chips topic-chips-left">{others}</div>
                 </section>
-
+{sources_section(CONDITION_SOURCES.get(cond["slug"], []) + DIET_STUDIES)}
                 <p class="qa-updated">Written by DoctorsVideos.video as a general summary of published research, not by
                 the doctors in the videos. For education only; it isn't medical advice. Talk to your own doctor
-                before changing your diet or medicines. Last updated {UPDATED}.</p>
+                before changing your diet or medicines. Last reviewed {UPDATED}.</p>
             </div>
             <aside class="topic-aside">
                 <div class="ad-slot ad-box" data-ad-slot="article-inline"></div>
@@ -478,8 +480,9 @@ def build_calorie_page():
                     which don't always agree, and we don't rank or endorse any of them.</p>
                     {video_block([], "Doctor videos on this question are coming soon.")}
                 </section>
+{sources_section(CALORIE_SOURCES)}
                 <p class="qa-updated">Written by DoctorsVideos.video as a general summary, not by the doctors in the
-                videos. For education only; it isn't medical advice. Last updated {UPDATED}.</p>
+                videos. For education only; it isn't medical advice. Last reviewed {UPDATED}.</p>
             </div>
             <aside class="topic-aside">
                 <div class="ad-slot ad-box" data-ad-slot="article-inline"></div>
