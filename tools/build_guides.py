@@ -7,6 +7,8 @@ section (matched by video title) and the doctors in that specialty. Edit the tex
 from build_questions import APP, UPDATED, esc, page_head, site_header, site_footer
 import json
 
+from sources import GUIDE_SOURCES, sources_section
+
 GUIDES = [
     {
         "slug": "hip-and-knee",
@@ -159,9 +161,9 @@ def build_guide(g):
                     or recommend them.</p>
                     <div class="doctor-grid" id="guide-doctors" data-terms="{esc(json.dumps(g['doctor_terms']))}"><p class="page-status">Loading doctors...</p></div>
                 </section>
-
+{sources_section(GUIDE_SOURCES.get(g["slug"], []))}
                 <p class="qa-updated">Written by DoctorsVideos.video as a general guide, not by the doctors in the videos.
-                For education only; it isn't medical advice. Last updated {UPDATED}.</p>
+                For education only; it isn't medical advice. Last reviewed {UPDATED}.</p>
             </div>
             <aside class="topic-aside">
                 <div class="ad-slot ad-box" data-ad-slot="topic-sponsor"></div>

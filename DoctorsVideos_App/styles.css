@@ -1118,3 +1118,10 @@ a.topic-chip { text-decoration: none; display: inline-block; }
 .doctor-hero .page-lede { margin-bottom: 0; }
 .doctor-hero .page-lede a { color: var(--brand-dark); }
 @media (max-width: 600px) { .doctor-avatar-lg { width: 60px; height: 60px; font-size: 1.3rem; } }
+
+/* ---------- Sources lists and the About page ---------- */
+.sources-list { margin: 10px 0 0; padding-left: 22px; color: var(--muted); font-size: 0.93rem; line-height: 1.5; }
+.sources-list li { margin-bottom: 6px; overflow-wrap: anywhere; }
+.sources-list a { color: var(--brand-dark); }
+.about-page h2 { margin-top: 28px; }
+.about-list li { margin-bottom: 10px; line-height: 1.55; }
