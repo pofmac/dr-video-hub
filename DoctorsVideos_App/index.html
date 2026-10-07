@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DoctorsVideos.video | The Ultimate Health Triage & Medical Database</title>
+    <title>DoctorsVideos.video | See What Doctors Say About Your Symptoms</title>
     <!-- Primary Meta Tags -->
-    <meta name="title" content="DoctorsVideos.video | The Ultimate Health Triage & Medical Database">
-    <meta name="description" content="Access vetted videos from 325+ practicing doctors and get an instant second opinion on any health topic. Search medical debates, self-experimenters, and a 50-state local directory to find care near you.">
+    <meta name="title" content="DoctorsVideos.video | See What Doctors Say About Your Symptoms">
+    <meta name="description" content="Watch and compare videos from hundreds of practicing doctors on any health topic. Search by symptom, see different viewpoints side by side, and browse doctors by state.">
     <meta name="keywords" content="health videos, medical triage, local doctors, find a doctor, health protocols, fasting, insulin, metabolic health, doctor debates, self-experimenting doctors">
     <meta name="author" content="DoctorsVideos.video">
     <meta name="robots" content="index, follow">
@@ -14,15 +14,15 @@
     <!-- Open Graph / Facebook / LinkedIn -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://doctorsvideos.video/">
-    <meta property="og:title" content="DoctorsVideos.video | Zero Copays. 1,000+ Perspectives.">
-    <meta property="og:description" content="Bypass the waiting room. Watch vetted doctors debate protocols and find a verified local specialist in all 50 US states.">
+    <meta property="og:title" content="DoctorsVideos.video | See What Doctors Say About Your Symptoms">
+    <meta property="og:description" content="Learn before your appointment. Compare what hundreds of doctors say about symptoms, conditions and treatments, and browse doctors by state.">
     <meta property="og:image" content="https://doctorsvideos.video/og-card.jpg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://doctorsvideos.video/">
-    <meta property="twitter:title" content="DoctorsVideos.video | Zero Copays. 1,000+ Perspectives.">
-    <meta property="twitter:description" content="Bypass the waiting room. Watch vetted doctors debate protocols and find a verified local specialist in all 50 US states.">
+    <meta property="twitter:title" content="DoctorsVideos.video | See What Doctors Say About Your Symptoms">
+    <meta property="twitter:description" content="Learn before your appointment. Compare what hundreds of doctors say about symptoms, conditions and treatments, and browse doctors by state.">
     <meta property="twitter:image" content="https://doctorsvideos.video/og-card.jpg">
 
     <!-- Structured Data JSON-LD Schema (Strictly for Google Bots) -->
@@ -32,28 +32,22 @@
       "@type": "WebSite",
       "name": "DoctorsVideos.video",
       "url": "https://doctorsvideos.video/",
-      "description": "A premiere web platform providing users with access to 1,000+ clinical perspectives, doctor debates, self-experimenter protocols, and a comprehensive 50-state vetted local doctor directory."
+      "description": "A physician video discovery engine that helps people find and compare what many doctors say about symptoms, conditions, treatments and procedures, with a directory of featured doctors by state."
     }
     </script>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- RSS / Alert Bar -->
-    <div class="alert-bar">
-        <div class="ticker-content">
-            <span class="alert-badge">⚠️ FLU SEASON ACTIVE</span>
-            <span>Check the Hometown Directory for updated vaccine availability in your state.</span>
-            <span class="breaking-news">📡 BREAKING: New study released on Vitamin D protocols.</span>
-        </div>
+    <div class="disclaimer-bar" role="note">
+        Educational videos only, not medical advice. In an emergency, call <strong>911</strong>.
     </div>
 
-    <!-- Main Navigation -->
     <nav class="navbar">
-        <div class="logo-container">
-            <div class="logo-mark">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#blueGreenGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <a class="logo-container" href="index.html" aria-label="DoctorsVideos.video home">
+            <span class="logo-mark">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#blueGreenGradient)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <defs>
                         <linearGradient id="blueGreenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stop-color="#0ea5e9" />
@@ -62,131 +56,204 @@
                     </defs>
                     <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                 </svg>
-            </div>
+            </span>
             <span class="logo-text">DoctorsVideos<span class="logo-accent">.video</span></span>
-        </div>
+        </a>
         <div class="nav-links">
-            <a href="experts.html" class="nav-btn">The Experts & Books</a>
-            <a href="blog.html" class="nav-btn">Clinical Protocols</a>
-            <a href="#" class="nav-btn" id="triage-toggle">AI Triage Desk</a>
-            <a href="#" class="nav-btn highlight-btn">Find Local Doctor</a>
+            <a href="topics.html" class="nav-btn">Topics</a>
+            <a href="experts.html" class="nav-btn">Doctors</a>
+            <a href="blog.html" class="nav-btn">Articles</a>
+            <a href="#directory" class="nav-btn highlight-btn">Find a Doctor<span class="hide-sm"> Near Me</span></a>
         </div>
     </nav>
 
-    <div id="triage-panel" style="display:none; max-width: 420px; margin: 20px auto; background: #12141c; border-radius: 12px; padding: 20px; border: 1px solid #2a2d3a;">
-        <p style="color:#fff; font-weight:600; margin-bottom:12px;">AI Triage Desk — describe what you're looking for</p>
-        <div id="triage-response" style="margin-bottom: 12px; color:#ccc; font-size:14px;"></div>
-        <div style="display:flex; gap:8px;">
-            <input type="text" id="triage-input" placeholder="e.g. persistent cough" style="flex:1; padding:8px; border-radius:6px; border:1px solid #333; background:#1a1d28; color:#fff;">
-            <button id="triage-send" style="padding:8px 16px; border-radius:6px; background:#0ea5e9; color:#fff; border:none;">Ask</button>
-        </div>
-    </div>
-
-    <!-- Top Hero Section -->
     <header class="hero-section">
         <div class="hero-content">
-            <h1 class="hero-title">1,000+ Perspectives. <br>Zero Copays.</h1>
-            <p class="hero-subtitle">Bypass the waiting room. Access vetted videos from 325+ practicing doctors and get an instant second opinion on any health topic.</p>
+            <p class="hero-eyebrow"><span class="play-dot" aria-hidden="true"></span>Free videos from real doctors</p>
+            <h1 class="hero-title">What are doctors saying<br> about <span class="grad-text">your symptoms?</span></h1>
+            <p class="hero-subtitle">Type a symptom or condition and watch short videos from real doctors. Compare their views, then talk it over with your own doctor.</p>
 
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="E.g., Try 'Shoulder Pain' or 'Fasting Glucose'">
-                <button class="search-submit">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="search-input" id="hero-search" aria-label="Search health topics" placeholder="Try &quot;knee pain&quot; or &quot;headaches&quot;">
+                <button class="search-submit" id="hero-search-btn" aria-label="Search">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </button>
             </div>
-            <p class="triage-prompt">Not sure what to search? <a href="#" class="triage-link">Ask the AI Symptom Desk →</a></p>
-        </div>
-
-        <!-- Cinema Mode Player -->
-        <div class="cinema-player-container">
-            <div class="cinema-player-wrapper">
-                <iframe class="main-video-player" id="cinema-iframe"
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                    title="Featured doctor video" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen>
-                </iframe>
-                <div class="cinema-glow"></div>
+            <div class="topic-chips" id="topics">
+                <span class="topic-chips-label">Popular:</span>
+                <button class="topic-chip" data-topic="back pain">Back Pain</button>
+                <button class="topic-chip" data-topic="knee pain">Knee Pain</button>
+                <button class="topic-chip" data-topic="headaches">Headaches</button>
+                <button class="topic-chip" data-topic="hip pain">Hip Pain</button>
+                <button class="topic-chip" data-topic="sciatica">Sciatica</button>
             </div>
-            <div class="cinema-caption" id="cinema-caption">
-                <span class="live-pulse"></span>
-                <strong>Live Portal:</strong> Loading...
+            <div class="try-questions">
+                <p class="try-questions-label">Not sure what to search? Try one of these questions:</p>
+                <ul class="try-questions-list">
+                    <li><a href="can-diet-reverse-type-2-diabetes.html">Can diet reverse type 2 diabetes?</a></li>
+                    <li><a href="why-am-i-gaining-weight-on-a-calorie-deficit.html">Why am I gaining weight on a calorie deficit?</a></li>
+                    <li><a href="foot-and-ankle.html#heel-pain">What causes heel pain in the morning?</a></li>
+                    <li><a href="can-diet-reverse-fatty-liver-disease.html">Can diet reverse fatty liver disease?</a></li>
+                    <li><a href="hip-and-knee.html#knee-replacement">What is recovery like after knee replacement?</a></li>
+                    <li><a href="can-diet-reverse-high-blood-pressure.html">Can diet lower high blood pressure?</a></li>
+                    <li><a href="can-diet-reverse-prediabetes.html">Can prediabetes be reversed?</a></li>
+                    <li><a href="hip-and-knee.html#acl-meniscus">Do I need surgery for a torn meniscus?</a></li>
+                </ul>
+                <a class="try-questions-more" href="questions.html">See all health questions →</a>
             </div>
+            <div id="triage-response" class="search-results" aria-live="polite" hidden></div>
 
-            <div class="stats-bar" id="stats-bar" style="display:flex; gap:30px; justify-content:center; margin-top:20px; flex-wrap:wrap;">
-                <div style="text-align:center;">
-                    <div style="font-size:2rem; font-weight:800; color:#0ea5e9;" id="stat-doctors">--</div>
-                    <div style="font-size:0.85rem; color:#888;">Doctors</div>
-                </div>
-                <div style="text-align:center;">
-                    <div style="font-size:2rem; font-weight:800; color:#10b981;" id="stat-videos">--</div>
-                    <div style="font-size:0.85rem; color:#888;">Videos</div>
-                </div>
-                <div style="text-align:center;">
-                    <div style="font-size:2rem; font-weight:800; color:#0ea5e9;" id="stat-specialties">--</div>
-                    <div style="font-size:0.85rem; color:#888;">Specialties</div>
-                </div>
+            <div class="stats-bar" id="stats-bar">
+                <div class="stat"><span class="stat-num" id="stat-doctors">--</span><span class="stat-label">doctors</span></div>
+                <div class="stat"><span class="stat-num" id="stat-videos">--</span><span class="stat-label">videos</span></div>
+                <div class="stat"><span class="stat-num" id="stat-specialties">--</span><span class="stat-label">specialties</span></div>
             </div>
         </div>
     </header>
 
-    <!-- The 3 Core Portals -->
-    <section class="portals-section">
-        <h2 class="section-title">Choose Your Perspective</h2>
+    <section class="new-videos-section section" id="new-videos-section" hidden>
+        <div class="section-head">
+            <div>
+                <p class="section-kicker">Fresh from doctors</p>
+                <h2 class="section-title" id="new-videos-title">New Doctor Videos This Week</h2>
+            </div>
+            <a class="section-link" href="topics.html">Browse all topics →</a>
+        </div>
+        <div class="video-grid" id="new-videos-grid"></div>
+    </section>
+
+    <section class="section" id="research-roundups">
+        <div class="section-head">
+            <div>
+                <p class="section-kicker">Featured series</p>
+                <h2 class="section-title">What hundreds of studies say</h2>
+                <p class="section-sub">A researcher reads the studies so you don't have to, and sums up what he learned. Watch in any order.</p>
+            </div>
+        </div>
+        <div class="video-grid video-grid-4">
+            <button class="video-card" data-youtube-id="uyURajaGMMQ" data-title="I Read 100 Studies: Here are 10 things I learned about your Health" data-doctor="Physionic (Nick Verhoeven, PhD)">
+                <span class="video-thumb"><img src="https://i.ytimg.com/vi/uyURajaGMMQ/hqdefault.jpg" alt="" loading="lazy"><span class="video-play" aria-hidden="true"></span></span>
+                <span class="video-card-title">I Read 100 Studies: Here are 10 things I learned about your Health</span>
+                <span class="video-card-meta">Physionic (Nick Verhoeven, PhD)</span>
+            </button>
+            <button class="video-card" data-youtube-id="yyv7PRbcv1I" data-title="I Read 250 Studies: 10 Things I Learned about your Health" data-doctor="Physionic (Nick Verhoeven, PhD)">
+                <span class="video-thumb"><img src="https://i.ytimg.com/vi/yyv7PRbcv1I/hqdefault.jpg" alt="" loading="lazy"><span class="video-play" aria-hidden="true"></span></span>
+                <span class="video-card-title">I Read 250 Studies: 10 Things I Learned about your Health</span>
+                <span class="video-card-meta">Physionic (Nick Verhoeven, PhD)</span>
+            </button>
+            <button class="video-card" data-youtube-id="UiVtOUeGP5g" data-title="I Read 500 Studies: 10 Things I Learned about your Health" data-doctor="Physionic (Nick Verhoeven, PhD)">
+                <span class="video-thumb"><img src="https://i.ytimg.com/vi/UiVtOUeGP5g/hqdefault.jpg" alt="" loading="lazy"><span class="video-play" aria-hidden="true"></span></span>
+                <span class="video-card-title">I Read 500 Studies: 10 Things I Learned about your Health</span>
+                <span class="video-card-meta">Physionic (Nick Verhoeven, PhD)</span>
+            </button>
+            <button class="video-card" data-youtube-id="sx8MyamJf3g" data-title="I analyzed 1,000 Health Studies: Here are 10 Things I Learned" data-doctor="Physionic (Nick Verhoeven, PhD)">
+                <span class="video-thumb"><img src="https://i.ytimg.com/vi/sx8MyamJf3g/hqdefault.jpg" alt="" loading="lazy"><span class="video-play" aria-hidden="true"></span></span>
+                <span class="video-card-title">I analyzed 1,000 Health Studies: Here are 10 Things I Learned</span>
+                <span class="video-card-meta">Physionic (Nick Verhoeven, PhD)</span>
+            </button>
+        </div>
+    </section>
+
+    <div class="ad-slot ad-banner" data-ad-slot="home-banner"></div>
+
+    <div class="section-band">
+        <section class="section">
+            <div class="section-head">
+                <div>
+                    <p class="section-kicker">Explore</p>
+                    <h2 class="section-title">Browse health topics</h2>
+                </div>
+                <a class="section-link" href="topics.html">See all topics →</a>
+            </div>
+            <div class="browse-grid">
+                <a class="browse-tile" href="topics.html#symptoms">
+                    <span class="browse-icon tint-rose" aria-hidden="true">🤕</span>
+                    <h3>Symptoms</h3>
+                    <p>Back pain, headaches, fatigue and more. Start with what you feel.</p>
+                    <span class="section-link">Browse symptoms →</span>
+                </a>
+                <a class="browse-tile" href="topics.html#conditions">
+                    <span class="browse-icon tint-blue" aria-hidden="true">🩺</span>
+                    <h3>Conditions</h3>
+                    <p>Diabetes, arthritis, high blood pressure and other diagnoses.</p>
+                    <span class="section-link">Browse conditions →</span>
+                </a>
+                <a class="browse-tile" href="topics.html#procedures">
+                    <span class="browse-icon tint-violet" aria-hidden="true">🏥</span>
+                    <h3>Procedures</h3>
+                    <p>Surgeries, scans and treatments, explained before you decide.</p>
+                    <span class="section-link">Browse procedures →</span>
+                </a>
+                <a class="browse-tile" href="topics.html#specialties">
+                    <span class="browse-icon tint-green" aria-hidden="true">👩‍⚕️</span>
+                    <h3>Specialties</h3>
+                    <p>See what cardiologists, neurologists and others talk about.</p>
+                    <span class="section-link">Browse specialties →</span>
+                </a>
+            </div>
+            <div class="topic-chips topic-chips-left" style="margin-top:18px">
+                <span class="topic-chips-label">Specialty guides:</span>
+                <a class="topic-chip topic-chip-featured" href="hip-and-knee.html">🦵 Hip &amp; Knee guide</a>
+                <a class="topic-chip topic-chip-featured" href="foot-and-ankle.html">🦶 Foot &amp; Ankle guide</a>
+            </div>
+        </section>
+    </div>
+
+    <section class="section">
+        <h2 class="section-title">Choose your perspective</h2>
         <div class="portals-grid">
-
             <div class="portal-card">
-                <div class="portal-icon gradient-blue">🧪</div>
-                <h3 class="portal-title">The Self-<br>Experimenters</h3>
-                <p class="portal-desc">Watch doctors test extreme diets, workouts, and cutting-edge protocols directly on themselves to prove the science.</p>
-                <button class="portal-btn">Enter Portal</button>
+                <div class="portal-icon gradient-blue" aria-hidden="true">🧪</div>
+                <h3 class="portal-title">The Self-Experimenters</h3>
+                <p class="portal-desc">Watch doctors try diets, workouts and new routines on themselves and share what happened.</p>
+                <button class="portal-btn" disabled>Coming soon</button>
             </div>
-
             <div class="portal-card">
-                <div class="portal-icon gradient-purple">🥊</div>
-                <h3 class="portal-title">The<br>Debaters</h3>
-                <p class="portal-desc">See the full picture. Our split-screen cinema viewer lets you watch two experts debate opposing views on critical conditions.</p>
-                <button class="portal-btn">Watch Debates</button>
+                <div class="portal-icon gradient-purple" aria-hidden="true">⚖️</div>
+                <h3 class="portal-title">The Debaters</h3>
+                <p class="portal-desc">See the full picture. Watch two doctors side by side when they disagree on a health question.</p>
+                <button class="portal-btn" disabled>Coming soon</button>
             </div>
-
             <div class="portal-card">
-                <div class="portal-icon gradient-green">📍</div>
-                <h3 class="portal-title">Hometown<br>Directory</h3>
-                <p class="portal-desc">Found a doctor you trust? Instantly connect via Phone, Text, or Email to one of our 325 vetted doctors practicing in all 50 states.</p>
-                <button class="portal-btn">Find My State</button>
+                <div class="portal-icon gradient-green" aria-hidden="true">📍</div>
+                <h3 class="portal-title">Hometown Directory</h3>
+                <p class="portal-desc">Found a doctor whose videos you like? Browse the doctors on this site by the state where they practice.</p>
+                <a href="#directory" class="portal-btn btn-primary">Find my state</a>
             </div>
-
         </div>
     </section>
 
-    <!-- 50-State Local Directory -->
-    <section class="state-directory-section">
+    <section class="state-directory-section" id="directory">
         <div class="directory-container">
-            <h2 class="directory-title">Find Local Doctors by State</h2>
-            <p class="directory-subtitle">Directly access our vetted portals for hometown care.</p>
-            <div class="state-grid">
-                <a href="#" class="state-link">Alabama</a> <a href="#" class="state-link">Alaska</a> <a href="#" class="state-link">Arizona</a> <a href="#" class="state-link">Arkansas</a> <a href="#" class="state-link">California</a>
-                <a href="#" class="state-link">Colorado</a> <a href="#" class="state-link">Connecticut</a> <a href="#" class="state-link">Delaware</a> <a href="#" class="state-link">Florida</a> <a href="#" class="state-link">Georgia</a>
-                <a href="#" class="state-link">Hawaii</a> <a href="#" class="state-link">Idaho</a> <a href="#" class="state-link">Illinois</a> <a href="#" class="state-link">Indiana</a> <a href="#" class="state-link">Iowa</a>
-                <a href="#" class="state-link">Kansas</a> <a href="#" class="state-link">Kentucky</a> <a href="#" class="state-link">Louisiana</a> <a href="#" class="state-link">Maine</a> <a href="#" class="state-link">Maryland</a>
-                <a href="#" class="state-link">Massachusetts</a> <a href="#" class="state-link">Michigan</a> <a href="#" class="state-link">Minnesota</a> <a href="#" class="state-link">Mississippi</a> <a href="#" class="state-link">Missouri</a>
-                <a href="#" class="state-link">Montana</a> <a href="#" class="state-link">Nebraska</a> <a href="#" class="state-link">Nevada</a> <a href="#" class="state-link">New Hampshire</a> <a href="#" class="state-link">New Jersey</a>
-                <a href="#" class="state-link">New Mexico</a> <a href="#" class="state-link">New York</a> <a href="#" class="state-link">North Carolina</a> <a href="#" class="state-link">North Dakota</a> <a href="#" class="state-link">Ohio</a>
-                <a href="#" class="state-link">Oklahoma</a> <a href="#" class="state-link">Oregon</a> <a href="#" class="state-link">Pennsylvania</a> <a href="#" class="state-link">Rhode Island</a> <a href="#" class="state-link">South Carolina</a>
-                <a href="#" class="state-link">South Dakota</a> <a href="#" class="state-link">Tennessee</a> <a href="#" class="state-link">Texas</a> <a href="#" class="state-link">Utah</a> <a href="#" class="state-link">Vermont</a>
-                <a href="#" class="state-link">Virginia</a> <a href="#" class="state-link">Washington</a> <a href="#" class="state-link">West Virginia</a> <a href="#" class="state-link">Wisconsin</a> <a href="#" class="state-link">Wyoming</a>
-            </div>
+            <p class="section-kicker" style="text-align:center">Hometown directory</p>
+            <h2 class="directory-title">Find doctors by state</h2>
+            <p class="directory-subtitle">Browse featured doctors by the state where they practice. Doctors appear because they publish educational videos, not because we recommend them.</p>
+            <div class="state-grid"><p class="directory-subtitle">Loading states...</p></div>
 
-            <div id="doctor-results-header" style="display:none; margin-top: 50px; text-align: center;">
-                <h3 id="doctor-results-title" style="font-size: 2rem; color: #0ea5e9;">Doctors in State</h3>
+            <div id="doctor-results-header" class="doctor-results-header" hidden>
+                <h3 id="doctor-results-title">Doctors in state</h3>
             </div>
-            <div id="doctor-results" class="doctor-results-grid" style="display: none;">
-                <!-- Cards will be injected here -->
-            </div>
+            <div id="doctor-results" class="doctor-results-grid" hidden></div>
         </div>
     </section>
+
+    <footer class="site-footer">
+        <p class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="topics.html">Health Topics</a>
+            <a href="questions.html">Health Questions</a>
+            <a href="experts.html">Doctors</a>
+            <a href="blog.html">Articles</a>
+            <a href="index.html#directory">Find a Doctor Near Me</a>
+            <a href="advertise.html">Advertise with us</a>
+        </p>
+        <p><strong>DoctorsVideos.video</strong> organizes publicly available videos from doctors so you can compare viewpoints. Content is for education only and is not medical advice, diagnosis or treatment. Always talk to your own doctor. In an emergency call 911; for a mental health crisis call or text 988.</p>
+        <p>Featured doctors are not affiliated with or endorsed by this site, and we do not rank or recommend individual doctors.</p>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="common.js"></script>
+    <script src="ads.js"></script>
     <script src="triage-desk.js"></script>
     <script src="app.js"></script>
 </body>

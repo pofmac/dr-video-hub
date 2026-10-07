@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advertise With Us | DoctorsVideos.video</title>
+    <meta name="description" content="Reach people researching symptoms, conditions and treatments. Sponsored spots for clinics and health businesses on DoctorsVideos.video.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="disclaimer-bar" role="note">
+        Educational videos only, not medical advice. In an emergency, call <strong>911</strong>.
+    </div>
+
+    <nav class="navbar">
+        <a class="logo-container" href="index.html" aria-label="DoctorsVideos.video home">
+            <span class="logo-mark">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#blueGreenGradient)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="blueGreenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#0ea5e9" />
+                            <stop offset="100%" stop-color="#10b981" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                </svg>
+            </span>
+            <span class="logo-text">DoctorsVideos<span class="logo-accent">.video</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="topics.html" class="nav-btn">Topics</a>
+            <a href="experts.html" class="nav-btn">Doctors</a>
+            <a href="blog.html" class="nav-btn">Articles</a>
+            <a href="index.html#directory" class="nav-btn highlight-btn">Find a Doctor<span class="hide-sm"> Near Me</span></a>
+        </div>
+    </nav>
+
+    <main class="advertise-page">
+        <h1>Advertise on DoctorsVideos.video</h1>
+        <p class="advertise-lede">People come here to research a symptom or condition before they see a doctor. Put your practice in front of them at the moment they're looking for help.</p>
+
+        <h2>Available spots</h2>
+        <!-- Prices below are suggested founding-advertiser rates. Edit them to whatever you charge. -->
+        <div class="spot-grid">
+            <div class="spot-card">
+                <h3>State directory listing</h3>
+                <p>Your clinic appears first, marked "Sponsored," when people browse doctors in your state.</p>
+                <p class="spot-price">$49 / month</p>
+            </div>
+            <div class="spot-card">
+                <h3>Topic sponsor</h3>
+                <p>Your ad on a topic page such as Back Pain or Knee Pain, where people are researching that exact problem.</p>
+                <p class="spot-price">$99 / month</p>
+            </div>
+            <div class="spot-card">
+                <h3>Home page banner</h3>
+                <p>One banner on the home page, seen by every visitor who scrolls past the featured video.</p>
+                <p class="spot-price">$149 / month</p>
+            </div>
+            <div class="spot-card">
+                <h3>Article ads</h3>
+                <p>A box inside our health articles and a banner at the end.</p>
+                <p class="spot-price">$39 / month per article</p>
+            </div>
+        </div>
+        <p class="spot-note">Founding advertisers keep their rate for 12 months. Month-to-month, cancel any time.</p>
+
+        <h2>Who can advertise</h2>
+        <ul class="advertise-rules">
+            <li>Licensed clinics, practices and legitimate health businesses.</li>
+            <li>No prescription drug ads, no "miracle cure" claims, and nothing that promises a result.</li>
+            <li>Every ad is clearly labeled as sponsored and kept separate from the free doctor listings. Advertising never changes which doctors or videos we show.</li>
+            <li>We don't sell or share visitors' searches or health information with advertisers.</li>
+        </ul>
+
+        <h2>Get in touch</h2>
+        <form id="ad-form" class="ad-form" novalidate>
+            <div class="form-row">
+                <label for="ad-name">Your name</label>
+                <input id="ad-name" name="name" type="text" required maxlength="200" autocomplete="name">
+            </div>
+            <div class="form-row">
+                <label for="ad-business">Practice or business</label>
+                <input id="ad-business" name="business" type="text" maxlength="200" autocomplete="organization">
+            </div>
+            <div class="form-row">
+                <label for="ad-email">Email</label>
+                <input id="ad-email" name="email" type="email" required maxlength="200" autocomplete="email">
+            </div>
+            <div class="form-row">
+                <label for="ad-phone">Phone (optional)</label>
+                <input id="ad-phone" name="phone" type="tel" maxlength="50" autocomplete="tel">
+            </div>
+            <div class="form-row">
+                <label for="ad-spot">Spot you're interested in</label>
+                <select id="ad-spot" name="spot">
+                    <option value="state-listing">State directory listing</option>
+                    <option value="topic">Topic sponsor</option>
+                    <option value="home-banner">Home page banner</option>
+                    <option value="article">Article ads</option>
+                    <option value="not-sure">Not sure yet</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="ad-state">State (for directory listings)</label>
+                <input id="ad-state" name="state" type="text" maxlength="50">
+            </div>
+            <div class="form-row">
+                <label for="ad-message">Message</label>
+                <textarea id="ad-message" name="message" rows="4" maxlength="2000"></textarea>
+            </div>
+            <button type="submit" class="ad-submit">Send</button>
+            <p id="ad-form-status" class="ad-form-status" role="status"></p>
+        </form>
+    </main>
+
+    <footer class="site-footer">
+        <p class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="topics.html">Health Topics</a>
+            <a href="questions.html">Health Questions</a>
+            <a href="experts.html">Doctors</a>
+            <a href="blog.html">Articles</a>
+            <a href="index.html#directory">Find a Doctor Near Me</a>
+            <a href="advertise.html">Advertise with us</a>
+        </p>
+        <p><strong>DoctorsVideos.video</strong> organizes publicly available videos from doctors so you can compare viewpoints. Content is for education only and is not medical advice, diagnosis or treatment. Always talk to your own doctor. In an emergency call 911; for a mental health crisis call or text 988.</p>
+        <p>Featured doctors are not affiliated with or endorsed by this site, and we do not rank or recommend individual doctors.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    (function () {
+        const client = supabase.createClient('https://apodzqtcrlvhrgeluomi.supabase.co', 'sb_publishable_vYjgL6oVtI_Qdvxs3emGlg_9e-slavK');
+        const form = document.getElementById('ad-form');
+        const status = document.getElementById('ad-form-status');
+        const params = new URLSearchParams(location.search);
+        const spotMap = { 'home-banner': 'home-banner', 'state-listing': 'state-listing', 'blog-banner': 'article', 'article-inline': 'article', 'article-end': 'article' };
+        if (spotMap[params.get('spot')]) form.spot.value = spotMap[params.get('spot')];
+        if (params.get('state')) form.state.value = params.get('state');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = form.name.value.trim();
+            const email = form.email.value.trim();
+            if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+                status.textContent = 'Please enter your name and a valid email address.';
+                return;
+            }
+            const button = form.querySelector('button');
+            button.disabled = true;
+            status.textContent = 'Sending...';
+            const { error } = await client.from('ad_inquiries').insert({
+                name, email,
+                business: form.business.value.trim() || null,
+                phone: form.phone.value.trim() || null,
+                spot: form.spot.value,
+                state: form.state.value.trim() || null,
+                message: form.message.value.trim() || null,
+            });
+            button.disabled = false;
+            if (error) {
+                status.textContent = 'Sorry, your message could not be sent. Please try again in a few minutes.';
+                return;
+            }
+            form.reset();
+            status.textContent = 'Thanks! We received your message and will get back to you soon.';
+        });
+    })();
+    </script>
+</body>
+</html>
