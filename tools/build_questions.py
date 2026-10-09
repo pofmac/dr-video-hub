@@ -328,10 +328,10 @@ def page_head(title, description, canonical, schema):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{esc(title)}</title>
     <meta name="description" content="{esc(description)}">
-    <link rel="canonical" href="https://doctorsvideos.video/{canonical}">
+    <link rel="canonical" href="https://www.doctorsvideos.video/{canonical}">
     <meta property="og:title" content="{esc(title)}">
     <meta property="og:description" content="{esc(description)}">
-    <meta property="og:url" content="https://doctorsvideos.video/{canonical}">
+    <meta property="og:url" content="https://www.doctorsvideos.video/{canonical}">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script type="application/ld+json">
@@ -496,7 +496,7 @@ def build_calorie_page():
 
 def build_hub():
     schema = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "Health Questions",
-              "url": "https://doctorsvideos.video/" + HUB_SLUG}
+              "url": "https://www.doctorsvideos.video/" + HUB_SLUG}
     out = [page_head("Health Questions: Can Diet Reverse It? | DoctorsVideos.video",
                      "Plain answers to common questions about diets and conditions like type 2 diabetes, fatty liver "
                      "and high blood pressure, with videos from many doctors.", HUB_SLUG, schema), site_header()]

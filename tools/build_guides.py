@@ -120,7 +120,7 @@ GUIDES = [
 
 def build_guide(g):
     schema = {"@context": "https://schema.org", "@type": "MedicalWebPage", "name": f"{g['title']}: What Doctors Say",
-              "url": f"https://doctorsvideos.video/{g['slug']}.html", "about": [s["title"] for s in g["sections"]]}
+              "url": f"https://www.doctorsvideos.video/{g['slug']}.html", "about": [s["title"] for s in g["sections"]]}
     title = f"{g['title']} Pain and Surgery: Videos From Many Doctors | DoctorsVideos.video"
     desc = g["lede"][:160]
     out = [page_head(title, desc, g["slug"] + ".html", schema), site_header()]

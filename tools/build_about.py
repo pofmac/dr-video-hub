@@ -6,7 +6,7 @@ from build_questions import APP, UPDATED, page_head, site_header, site_footer
 
 def build_about():
     schema = {"@context": "https://schema.org", "@type": "AboutPage", "name": "About DoctorsVideos.video",
-              "url": "https://doctorsvideos.video/about.html"}
+              "url": "https://www.doctorsvideos.video/about.html"}
     out = [page_head("About Us & How We Write Our Pages | DoctorsVideos.video",
                      "Who runs DoctorsVideos.video, how doctors and videos are chosen, how our written pages are "
                      "made and checked, and how the site is paid for.", "about.html", schema), site_header()]
