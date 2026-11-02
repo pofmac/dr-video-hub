@@ -39,10 +39,10 @@ NAME_RE = re.compile(r"\b(" + "|".join(sorted(map(re.escape, STATE_NAMES), key=l
 # Phrases that contain a state name but don't mean the state.
 NOT_A_STATE_RE = re.compile(r"Washington,? D\.?C\.?|George Washington|Washington Post|Kansas City|"
                             r"Indiana Jones|Georgia,? (?:the )?country|Tbilisi|New York Times|New Mexico State")
-# "Columbus, OH" or "Columbus, OH 43215". These also look like letters after a name ("Jane Smith, MD",
-# "John Doe, PA-C"), so they only count when a ZIP code follows.
+# "Columbus, OH" or "Columbus, OH 43215". Some also look like letters after a name ("Jane Smith, MD",
+# "John Doe, PA-C", "Lachlan Crawford, ND", "Amy Lee, MS"), so those only count when a ZIP code follows.
 ABBR_RE = re.compile(r"\b[A-Z][a-zA-Z.]+(?: [A-Z][a-zA-Z.]+)*, ([A-Z]{2})(?:\s+(\d{5}))?\b(?!-)")
-NEEDS_ZIP = {"MD", "PA", "DE", "IN", "ME", "OR", "OK", "HI", "CO", "MA"}
+NEEDS_ZIP = {"MD", "PA", "DE", "IN", "ME", "OR", "OK", "HI", "CO", "MA", "MS", "ND", "MT"}
 
 VIDEOS_TO_READ = 15
 
