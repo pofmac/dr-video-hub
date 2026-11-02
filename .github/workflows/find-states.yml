@@ -10,6 +10,10 @@ on:
         description: "Leave blank to only see the list. Type sure to save all sure ones, or doctor IDs like 12,45,80"
         required: false
         default: ""
+      set:
+        description: "Places you looked up yourself, e.g. 1234=Georgia, 567=TX, 890=Canada (write countries out in full). Saves only these and skips the list."
+        required: false
+        default: ""
 
 jobs:
   find:
@@ -25,4 +29,5 @@ jobs:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           APPLY: ${{ inputs.apply }}
-        run: python3 tools/find_states.py --apply "$APPLY"
+          SET: ${{ inputs.set }}
+        run: python3 tools/find_states.py --apply "$APPLY" --set "$SET"

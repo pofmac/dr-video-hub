@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log(`Fetched ${allVideos.length} videos from live Supabase database!`);
 
         doctors = doctors.map(doc => {
-            const state = normalizeState(doc['State'] || doc.state);
+            const state = doctorLocation(doc);
 
             return {
                 db_id: doc.id,
@@ -80,7 +80,10 @@ function setupStateGrid(doctors) {
 
     grid.innerHTML = '';
 
-    [...ALL_STATES, LOCATION_UNLISTED].forEach(state => {
+    // US states first, then any other countries doctors practice in, then doctors with no location.
+    const countries = [...new Set(doctors.map(d => d.state))]
+        .filter(place => !ALL_STATES.includes(place) && place !== LOCATION_UNLISTED).sort((a, b) => a.localeCompare(b));
+    [...ALL_STATES, ...countries, LOCATION_UNLISTED].forEach(state => {
         const stateDoctors = doctors.filter(d => d.state === state);
         if (state === LOCATION_UNLISTED && stateDoctors.length === 0) return;
 
@@ -117,7 +120,7 @@ function renderDoctorCards(doctors, label, type = 'state') {
     const suffix = type === 'specialty' ? 'Doctors' : '';
     resultsTitle.innerHTML = `${prefix} <span class="grad-text">${escapeHtml(label)}</span> ${suffix}`;
 
-    resultsContainer.innerHTML = (type === 'state' && label !== LOCATION_UNLISTED && typeof stateSponsorCardHtml === 'function')
+    resultsContainer.innerHTML = (type === 'state' && ALL_STATES.includes(label) && typeof stateSponsorCardHtml === 'function')
         ? stateSponsorCardHtml(label) : '';
 
     doctors.forEach(doc => {

@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const grid = document.getElementById('doctor-grid');
     try {
         const [doctors, videos] = await Promise.all([
-            fetchAllRows(() => db.from('doctors_final').select('id, "Channel Name", "Specialty", "State", status').or(VISIBLE_DOCTOR_FILTER).order('id')),
+            fetchAllRows(() => db.from('doctors_final').select('id, "Channel Name", "Specialty", "State", country, status').or(VISIBLE_DOCTOR_FILTER).order('id')),
             fetchAllRows(() => db.from('videos').select('doctor_id, youtube_video_id, title').not('youtube_video_id', 'is', null).order('id')),
         ]);
 
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             id: d.id,
             name: doctorDisplayName(d),
             specialty: String(d.Specialty || '').trim().toLowerCase(),
-            state: normalizeState(d.State),
+            state: doctorLocation(d),
             videos: videosByDoctor.get(d.id) || [],
         })).sort((a, b) => a.name.replace(/^dr\.?\s+/i, '').localeCompare(b.name.replace(/^dr\.?\s+/i, '')));
 
