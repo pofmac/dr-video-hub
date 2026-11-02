@@ -1,0 +1,28 @@
+# Suggests a US state for doctors whose state is missing, from what their YouTube channel says.
+# GitHub > Actions > "Find missing doctor states" > Run workflow. The list appears on the run's Summary page.
+# Needs the same two repository secrets as "Add a doctor from YouTube": YOUTUBE_API_KEY and SUPABASE_SECRET_KEY.
+name: Find missing doctor states
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Leave blank to only see the list. Type sure to save all sure ones, or doctor IDs like 12,45,80"
+        required: false
+        default: ""
+
+jobs:
+  find:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Find states
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          APPLY: ${{ inputs.apply }}
+        run: python3 tools/find_states.py --apply "$APPLY"

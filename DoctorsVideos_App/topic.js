@@ -63,6 +63,40 @@ async function loadVideos(topic) {
     return videos;
 }
 
+// Most topics have few hand-tagged videos yet, so also find videos whose titles mention the topic.
+// "Back Pain" -> ["back pain"], "Headaches & Migraines" -> ["headaches", "headache", "migraines", "migraine"].
+function titleTerms(topic) {
+    const base = String(topic.name || '').toLowerCase().replace(/\(.*?\)/g, ' ');
+    const parts = base.split(/\s*(?:\/|&|,|\band\b|\bor\b)\s*/)
+        .map(part => part.replace(/[^a-z0-9' -]/g, ' ').replace(/\s+/g, ' ').trim())
+        .filter(part => part.length >= 3);
+    const terms = new Set();
+    parts.forEach(part => {
+        terms.add(part);
+        if (/[^s]s$/.test(part) && part.length >= 5) terms.add(part.slice(0, -1));
+    });
+    return [...terms].slice(0, 8);
+}
+
+function termsRegex(terms) {
+    const escaped = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    return new RegExp(`\\b(${escaped.join('|')})`, 'i');
+}
+
+async function loadTitleMatches(topic) {
+    const terms = titleTerms(topic);
+    if (!terms.length) return [];
+    const { data, error } = await db.from('videos')
+        .select('id, doctor_id, youtube_video_id, title, thumbnail_url, published_at')
+        .or(terms.map(t => `title.ilike.*${t}*`).join(','))
+        .not('youtube_video_id', 'is', null)
+        .order('published_at', { ascending: false, nullsFirst: false })
+        .limit(400);
+    if (error) throw error;
+    const re = termsRegex(terms);
+    return (data || []).filter(v => re.test(v.title || ''));
+}
+
 async function loadViewpoints(topic) {
     const { data, error } = await db.from('viewpoints')
         .select('doctor_id, video_id, stance_summary')
@@ -100,11 +134,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('topic-description').textContent = topic.description || '';
         document.getElementById('topic-category').textContent = topic.category || '';
 
-        const [videos, viewpoints, related] = await Promise.all([
+        const [tagged, titleMatches, viewpoints, related] = await Promise.all([
             loadVideos(topic),
+            loadTitleMatches(topic).catch(err => { console.warn('Title search failed', err); return []; }),
             loadViewpoints(topic).catch(() => []),
             loadRelated(topic).catch(() => []),
         ]);
+        // Hand-tagged videos first, then title matches that aren't already tagged.
+        const taggedIds = new Set(tagged.map(v => v.id));
+        const videos = tagged.concat(titleMatches.filter(v => !taggedIds.has(v.id)));
         await loadDoctors([...videos.map(v => v.doctor_id), ...viewpoints.map(v => v.doctor_id)]);
         // Leave out hidden doctors and videos with Hindi / other Indian-script titles.
         const shownVideos = videos.filter(v => topicDoctors.has(v.doctor_id) && isEnglishFriendlyVideo(v));
