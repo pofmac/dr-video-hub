@@ -4,11 +4,15 @@ Runs from GitHub (Actions tab > "Find missing doctor states" > Run workflow), or
     YOUTUBE_API_KEY=... SUPABASE_SECRET_KEY=... python3 tools/find_states.py            # list suggestions only
     YOUTUBE_API_KEY=... SUPABASE_SECRET_KEY=... python3 tools/find_states.py --apply sure
     YOUTUBE_API_KEY=... SUPABASE_SECRET_KEY=... python3 tools/find_states.py --apply 12,45,80
+    SUPABASE_SECRET_KEY=... python3 tools/find_states.py --set "1234=Georgia, 567=TX, 890=Canada"
 
 It reads the channel description, the channel's country setting and the descriptions of its newest videos,
 and looks for a state name ("Texas") or a "City, ST" address ("Columbus, OH 43215"). It never guesses:
 a doctor with no clear clue, clues pointing to different states, or a channel set to another country
-is listed but left blank. Nothing is saved unless --apply is given.
+is listed but left blank. Nothing is saved unless --apply or --set is given.
+
+--set saves places you looked up yourself: a US state (name or two-letter code) or, for doctors outside
+the US, a country name. It skips the YouTube scan, so it finishes in seconds.
 Only the Python standard library is used.
 """
 import argparse
@@ -45,6 +49,24 @@ ABBR_RE = re.compile(r"\b[A-Z][a-zA-Z.]+(?: [A-Z][a-zA-Z.]+)*, ([A-Z]{2})(?:\s+(
 NEEDS_ZIP = {"MD", "PA", "DE", "IN", "ME", "OR", "OK", "HI", "CO", "MA", "MS", "ND", "MT"}
 
 VIDEOS_TO_READ = 15
+
+# Countries typed with --set, saved as two-letter codes (the site shows the full name).
+# Two-letter entries always mean a US state ("CA" is California), so countries are written out.
+COUNTRIES = {
+    "canada": "CA", "united kingdom": "GB", "uk": "GB", "great britain": "GB", "britain": "GB",
+    "england": "GB", "scotland": "GB", "wales": "GB", "northern ireland": "GB", "australia": "AU",
+    "new zealand": "NZ", "ireland": "IE", "india": "IN", "pakistan": "PK", "bangladesh": "BD",
+    "sri lanka": "LK", "nepal": "NP", "south africa": "ZA", "nigeria": "NG", "kenya": "KE", "ghana": "GH",
+    "egypt": "EG", "philippines": "PH", "singapore": "SG", "malaysia": "MY", "indonesia": "ID",
+    "thailand": "TH", "vietnam": "VN", "japan": "JP", "south korea": "KR", "korea": "KR", "china": "CN",
+    "hong kong": "HK", "united arab emirates": "AE", "uae": "AE", "saudi arabia": "SA", "qatar": "QA",
+    "kuwait": "KW", "israel": "IL", "jordan": "JO", "lebanon": "LB", "iran": "IR", "iraq": "IQ",
+    "turkey": "TR", "germany": "DE", "france": "FR", "spain": "ES", "portugal": "PT", "italy": "IT",
+    "netherlands": "NL", "belgium": "BE", "switzerland": "CH", "austria": "AT", "sweden": "SE",
+    "norway": "NO", "denmark": "DK", "finland": "FI", "poland": "PL", "greece": "GR", "ukraine": "UA",
+    "mexico": "MX", "brazil": "BR", "argentina": "AR", "chile": "CL", "colombia": "CO", "peru": "PE",
+    "jamaica": "JM", "puerto rico": "PR",
+}
 
 
 def clues(text):
@@ -101,7 +123,7 @@ def missing_state_doctors():
     rows, start = [], 0
     while True:
         page = db(f"doctors_final?select=id,%22Channel%20Name%22,%22Channel%20ID%22,%22Channel%20URL%22,"
-                  f"%22Description%22,%22State%22,status&order=id&offset={start}&limit=1000")
+                  f"%22Description%22,%22State%22,country,status&order=id&offset={start}&limit=1000")
         rows += page or []
         if not page or len(page) < 1000:
             break
@@ -111,7 +133,58 @@ def missing_state_doctors():
         value = (raw or "").strip()
         return value.title() in STATE_NAMES or value.upper() in STATES
 
-    return [r for r in rows if r.get("status") != "hidden" and not has_state(r.get("State"))]
+    def abroad(raw):
+        value = (raw or "").strip().lower()
+        return bool(value) and value not in ("us", "usa", "united states", "united states of america")
+
+    return [r for r in rows if r.get("status") != "hidden" and not has_state(r.get("State")) and not abroad(r.get("country"))]
+
+
+def place_for(text):
+    """'Georgia' or 'GA' -> ('Georgia', 'US'); 'Canada' -> ('', 'CA'); anything else -> None."""
+    value = re.sub(r"\s+", " ", text.strip().strip(".")).strip()
+    if value.upper() in STATES:
+        return STATES[value.upper()], "US"
+    for name in STATE_NAMES:
+        if name.lower() == value.lower():
+            return name, "US"
+    code = COUNTRIES.get(value.lower())
+    return ("", code) if code else None
+
+
+def save_places(entries):
+    """entries: '1234=Georgia, 567=TX, 890=New Zealand'. Returns report lines."""
+    pairs = re.findall(r"(\d+)\s*[=:]\s*([A-Za-z][A-Za-z .'-]*)", entries)
+    if not pairs:
+        fail("Nothing to save. Type entries like 1234=Georgia, 567=TX, 890=Canada")
+    ids = ",".join(q(i) for i, _ in pairs)
+    names = {r["id"]: r.get("Channel Name") for r in db(f"doctors_final?select=id,%22Channel%20Name%22&id=in.({ids})") or []}
+    lines = ["## Saved locations", "", "| ID | Doctor | Saved as |", "|---|---|---|"]
+    saved = 0
+    for raw_id, text in pairs:
+        doc_id, place = int(raw_id), place_for(text)
+        if doc_id not in names:
+            result = f"not saved: no doctor with ID {doc_id}"
+        elif not place:
+            result = f"not saved: '{text.strip()}' isn't a US state or a country on the list (write countries out in full)"
+        else:
+            state, country = place
+            db(f"doctors_final?id=eq.{doc_id}", method="PATCH", body={"State": state, "country": country},
+               prefer="return=minimal")
+            saved += 1
+            result = state or next(name for name, code in COUNTRIES.items() if code == country).title().replace("Uae", "UAE")
+        print(f"{doc_id:>5}  {str(names.get(doc_id) or '?')[:40]:<40}  {result}")
+        lines.append(f"| {doc_id} | {cell(names.get(doc_id))} | {cell(result)} |")
+    lines.insert(1, f"**Saved {saved} of {len(pairs)}.**")
+    print(f"\nSaved {saved} of {len(pairs)}")
+    return lines
+
+
+def youtube_link(doc):
+    url = (doc.get("Channel URL") or "").replace("@@", "@")
+    if url.startswith("http"):
+        return url
+    return f"https://www.youtube.com/channel/{doc['Channel ID']}" if doc.get("Channel ID") else ""
 
 
 def channel_for(doc):
@@ -170,7 +243,13 @@ def write_summary(lines):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--apply", default="", help="'sure' to save every sure suggestion, or doctor IDs like 12,45,80")
+    parser.add_argument("--set", default="", help="places you looked up, e.g. '1234=Georgia, 567=TX, 890=Canada'")
     args = parser.parse_args()
+    if args.set.strip():
+        if not os.environ.get("SUPABASE_SECRET_KEY"):
+            fail("SUPABASE_SECRET_KEY is missing. Add it under GitHub > Settings > Secrets and variables > Actions.")
+        write_summary(save_places(args.set))
+        return
     for var in ("YOUTUBE_API_KEY", "SUPABASE_SECRET_KEY"):
         if not os.environ.get(var):
             fail(f"{var} is missing. Add it under GitHub > Settings > Secrets and variables > Actions.")
@@ -201,14 +280,16 @@ def main():
         f"**{blank}** left blank.",
         "",
         f"**Saved {len(to_save)} states.**" if apply else
-        "_Nothing was saved. To save, run again and type `sure` (all sure ones) or doctor IDs like `12,45,80`._",
+        "_Nothing was saved. To save, run again and type `sure` (all sure ones) or doctor IDs like `12,45,80`. "
+        "For places you looked up yourself, use the second box: `1234=Georgia, 890=Canada`._",
         "",
-        "| ID | Doctor | Suggested state | Sure? | What the channel says |",
-        "|---|---|---|---|---|",
+        "| ID | Doctor | YouTube | Suggested state | Sure? | What the channel says |",
+        "|---|---|---|---|---|---|",
     ]
     order = {"sure": 0, "check": 1}
     for doc, state, verdict, evidence in sorted(results, key=lambda r: (order.get(r[2], 2), r[0]["id"])):
-        lines.append(f"| {doc['id']} | {cell(doc.get('Channel Name'))} | {state or '-'} | "
+        link = youtube_link(doc)
+        lines.append(f"| {doc['id']} | {cell(doc.get('Channel Name'))} | {f'[channel]({link})' if link else '-'} | {state or '-'} | "
                      f"{'yes' if verdict == 'sure' else 'check' if verdict == 'check' else cell(verdict)} | "
                      f"{cell(evidence)} |")
     write_summary(lines)

@@ -26,7 +26,7 @@ function guideDoctorCard(doc) {
                 <div class="doctor-avatar" aria-hidden="true">${escapeHtml(doctorInitials(name))}</div>
                 <div class="card-specialty">${escapeHtml(doc.Specialty || 'Medical expert')}</div>
                 <h3 class="card-name">${escapeHtml(name)}</h3>
-                <div class="card-state">📍 ${escapeHtml(normalizeState(doc.State))}</div>
+                <div class="card-state">📍 ${escapeHtml(doctorLocation(doc))}</div>
             </div>
             <a class="card-btn" href="doctor.html?id=${encodeURIComponent(doc.id)}">▶ See their videos</a>
         </div>`;
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         const doctors = (await fetchAllRows(() => db.from('doctors_final')
-            .select('id, "Channel Name", "Specialty", "State", status').order('id'))).filter(isVisibleDoctor);
+            .select('id, "Channel Name", "Specialty", "State", country, status').order('id'))).filter(isVisibleDoctor);
         const doctorsById = new Map(doctors.map(d => [d.id, d]));
         const specialtyRe = guideTermsRegex(JSON.parse(doctorBox.dataset.terms));
         const specialists = doctors.filter(d => specialtyRe.test(d.Specialty || ''))

@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!id) { location.replace('experts.html'); return; }
     try {
         const { data, error } = await db.from('doctors_final')
-            .select('id, "Channel Name", "Channel URL", "Specialty", "State", status').eq('id', id).maybeSingle();
+            .select('id, "Channel Name", "Channel URL", "Specialty", "State", country, status').eq('id', id).maybeSingle();
         if (error) throw error;
         if (!data || !isVisibleDoctor(data)) {
             title.textContent = 'Doctor not found';
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const channel = /^https?:\/\//i.test(data['Channel URL'] || '') ? data['Channel URL'] : '';
         const meta = document.getElementById('doc-meta');
-        meta.textContent = `📍 ${normalizeState(data.State)} · ${doctorVideos.length.toLocaleString()} video${doctorVideos.length === 1 ? '' : 's'}`;
+        meta.textContent = `📍 ${doctorLocation(data)} · ${doctorVideos.length.toLocaleString()} video${doctorVideos.length === 1 ? '' : 's'}`;
         if (channel) meta.insertAdjacentHTML('beforeend', ` · <a href="${escapeHtml(channel)}" target="_blank" rel="noopener">YouTube channel ↗</a>`);
 
         if (!doctorVideos.length) {

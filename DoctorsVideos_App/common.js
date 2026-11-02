@@ -62,6 +62,25 @@ function normalizeState(raw) {
     return STATE_ABBR[value.toUpperCase()] || LOCATION_UNLISTED;
 }
 
+const US_COUNTRY = /^(us|usa|u\.s\.a?\.?|united states( of america)?)$/i;
+
+// Country codes like "CA" become "Canada"; names already written out are shown as typed.
+function countryName(raw) {
+    const value = String(raw || '').trim();
+    if (/^[a-z]{2}$/i.test(value)) {
+        try { return new Intl.DisplayNames(['en'], { type: 'region' }).of(value.toUpperCase()) || value; } catch (e) { return value; }
+    }
+    return value;
+}
+
+// Where a doctor practices: a US state, else their country, else "Location not listed".
+function doctorLocation(doc) {
+    const state = normalizeState(doc?.State ?? doc?.state);
+    if (state !== LOCATION_UNLISTED) return state;
+    const country = String(doc?.country || '').trim();
+    return country && !US_COUNTRY.test(country) ? countryName(country) : LOCATION_UNLISTED;
+}
+
 function doctorDisplayName(doc) {
     return String(doc?.['Channel Name'] || doc?.doctor_name || doc?.name || 'Doctor').replace(/"/g, '').trim();
 }
