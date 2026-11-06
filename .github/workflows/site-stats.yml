@@ -1,0 +1,47 @@
+# Rebuilds DoctorsVideos_App/site-stats.json (the home page's counts) from the database and commits it when it
+# changed, which redeploys the site. Runs daily, after "Add a doctor from YouTube" or "Find missing doctor states",
+# and by hand: GitHub > Actions > "Update home page counts" > Run workflow.
+# Needs the repository secret SUPABASE_SECRET_KEY (already used by the other workflows).
+name: Update home page counts
+
+on:
+  schedule:
+    - cron: "23 9 * * *"
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Add a doctor from YouTube", "Find missing doctor states"]
+    types: [completed]
+  push:
+    paths:
+      - tools/build_stats.py
+      - .github/workflows/site-stats.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-stats-${{ github.ref }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Count doctors and videos
+        env:
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: python3 tools/build_stats.py
+      - name: Commit the counts if they changed
+        # Committed as the repository owner so Vercel deploys it (Vercel skips commits from unknown authors).
+        run: |
+          git config user.name "pofmac"
+          git config user.email "153871119+pofmac@users.noreply.github.com"
+          git add DoctorsVideos_App/site-stats.json
+          if git diff --cached --quiet; then echo "Counts unchanged"; exit 0; fi
+          git commit -m "Update home page counts"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
