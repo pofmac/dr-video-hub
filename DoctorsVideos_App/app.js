@@ -1,102 +1,143 @@
 // Home page. Needs common.js (db, escapeHtml, fetchAllRows, video helpers) loaded first.
 
-let allVideos = [];
-let totalVideoCount = 0;
+// Counts come first from site-stats.json (rebuilt daily by .github/workflows/site-stats.yml), so the stats and the
+// state list show at once. The doctor list loads alongside it for the state cards, the symptom search and
+// "New videos"; the full videos table is only downloaded if site-stats.json can't be read.
+let videoCounts = new Map();   // doctor id -> English-friendly videos
+let doctorsLoaded = null;      // promise of the visible doctors
 
 document.addEventListener('DOMContentLoaded', async () => {
+    const statsLoaded = fetch('site-stats.json', { cache: 'no-cache' })
+        .then(res => res.ok ? res.json() : null)
+        .catch(() => null);
+    doctorsLoaded = loadDoctors();
+
+    const stats = await statsLoaded;
+    if (stats) {
+        videoCounts = new Map(Object.entries(stats.videos_by_doctor || {}).map(([id, n]) => [Number(id), n]));
+        populateStats(stats);
+        setupStateGrid(placeCountsFromStats(stats));
+    }
+
     try {
-        console.log("Connecting to Supabase...");
-
-        let doctors = await fetchAllRows(() => db
-            .from('doctors_final')
-            .select('*')
-            .or(VISIBLE_DOCTOR_FILTER)
-            .order('id'));
-
-        console.log(`Fetched ${doctors.length} doctors from live Supabase database!`);
-
-        // Only the columns the home page needs, paged past Supabase's 1,000-row limit.
-        allVideos = await fetchAllRows(() => db
-            .from('videos')
-            .select('doctor_id, youtube_video_id, title')
-            .order('id'));
-        const visibleIds = new Set(doctors.map(d => d.id));
-        allVideos = allVideos.filter(v => visibleIds.has(v.doctor_id) && isEnglishFriendlyVideo(v));
-        totalVideoCount = allVideos.length;
-
-        console.log(`Fetched ${allVideos.length} videos from live Supabase database!`);
-
-        doctors = doctors.map(doc => {
-            const state = doctorLocation(doc);
-
-            return {
-                db_id: doc.id,
-                channel_id: doc['Channel ID'],
-                name: doc['Channel Name'] || doc.doctor_name || doc.Channel_Name || "Doctor",
-                state: state,
-                specialty: doc['Specialty'] || doc.specialty || "Medical Expert",
-                raw: doc,
-                video_url: doc['Channel URL'] || doc.video_url || doc.Channel_URL
-            };
-        });
-
-        window.allDoctors = doctors;
-        window.doctorsById = new Map(doctors.map(d => [d.db_id, d]));
+        const doctors = await doctorsLoaded;
         loadNewVideos();
         loadTopics();
-
-        populateUI(doctors);
-        populateStats(doctors);
-
+        if (!stats) {
+            // No counts file: count in the browser, as before.
+            const allVideos = await fetchAllRows(() => db
+                .from('videos')
+                .select('doctor_id, youtube_video_id, title')
+                .order('id'));
+            const visibleIds = new Set(doctors.map(d => d.db_id));
+            const englishVideos = allVideos.filter(v => visibleIds.has(v.doctor_id) && isEnglishFriendlyVideo(v));
+            visibleIds.forEach(id => videoCounts.set(id, 0));
+            englishVideos.forEach(v => videoCounts.set(v.doctor_id, (videoCounts.get(v.doctor_id) || 0) + 1));
+            populateStats({
+                doctors: doctors.length,
+                videos: englishVideos.length,
+                specialties: new Set(doctors.map(d => d.specialty).filter(Boolean)).size,
+            });
+            setupStateGrid(placeCounts(doctors));
+        }
     } catch(err) {
         console.error("Could not load doctors from Supabase.", err);
         window.allDoctors = [];
         const grid = document.querySelector('.state-grid');
-        if (grid) grid.innerHTML = '<p class="directory-subtitle">The doctor directory could not be loaded right now. Please refresh the page or try again later.</p>';
+        if (grid && !stats) grid.innerHTML = '<p class="directory-subtitle">The doctor directory could not be loaded right now. Please refresh the page or try again later.</p>';
     }
 });
 
-function populateUI(doctors) {
-    setupStateGrid(doctors);
+async function loadDoctors() {
+    let doctors = await fetchAllRows(() => db
+        .from('doctors_final')
+        .select('*')
+        .or(VISIBLE_DOCTOR_FILTER)
+        .order('id'));
+
+    console.log(`Fetched ${doctors.length} doctors from live Supabase database!`);
+
+    doctors = doctors.map(doc => {
+        const state = doctorLocation(doc);
+
+        return {
+            db_id: doc.id,
+            channel_id: doc['Channel ID'],
+            name: doc['Channel Name'] || doc.doctor_name || doc.Channel_Name || "Doctor",
+            state: state,
+            specialty: doc['Specialty'] || doc.specialty || "Medical Expert",
+            raw: doc,
+            video_url: doc['Channel URL'] || doc.video_url || doc.Channel_URL
+        };
+    });
+
+    window.allDoctors = doctors;
+    window.doctorsById = new Map(doctors.map(d => [d.db_id, d]));
+    return doctors;
 }
 
-function populateStats(doctors) {
+function populateStats(stats) {
     const statDoctors = document.getElementById('stat-doctors');
     const statVideos = document.getElementById('stat-videos');
     const statSpecialties = document.getElementById('stat-specialties');
+    const asOf = document.getElementById('stats-as-of');
 
-    if (statDoctors) statDoctors.textContent = doctors.length.toLocaleString();
-    if (statVideos) statVideos.textContent = totalVideoCount.toLocaleString();
-
-    if (statSpecialties) {
-        const uniqueSpecialties = new Set(doctors.map(d => d.specialty).filter(Boolean));
-        statSpecialties.textContent = uniqueSpecialties.size.toLocaleString();
+    if (statDoctors) statDoctors.textContent = stats.doctors.toLocaleString();
+    if (statVideos) statVideos.textContent = stats.videos.toLocaleString();
+    if (statSpecialties) statSpecialties.textContent = stats.specialties.toLocaleString();
+    if (asOf && stats.as_of) {
+        asOf.textContent = `Counts as of ${formatDate(stats.as_of + 'T12:00:00Z')}`;
+        asOf.hidden = false;
     }
 }
 
-function setupStateGrid(doctors) {
+// Place name -> number of doctors, from the counts file. Country codes become names, as on the doctor cards.
+function placeCountsFromStats(stats) {
+    const counts = new Map(Object.entries(stats.states || {}));
+    Object.entries(stats.countries || {}).forEach(([country, n]) => {
+        const name = countryName(country);
+        counts.set(name, (counts.get(name) || 0) + n);
+    });
+    if (stats.unlisted) counts.set(LOCATION_UNLISTED, stats.unlisted);
+    return counts;
+}
+
+function placeCounts(doctors) {
+    const counts = new Map();
+    doctors.forEach(d => counts.set(d.state, (counts.get(d.state) || 0) + 1));
+    return counts;
+}
+
+function setupStateGrid(counts) {
     const grid = document.querySelector('.state-grid');
     if (!grid) return;
 
     grid.innerHTML = '';
 
     // US states first, then any other countries doctors practice in, then doctors with no location.
-    const countries = [...new Set(doctors.map(d => d.state))]
+    const countries = [...counts.keys()]
         .filter(place => !ALL_STATES.includes(place) && place !== LOCATION_UNLISTED).sort((a, b) => a.localeCompare(b));
     [...ALL_STATES, ...countries, LOCATION_UNLISTED].forEach(state => {
-        const stateDoctors = doctors.filter(d => d.state === state);
-        if (state === LOCATION_UNLISTED && stateDoctors.length === 0) return;
+        const count = counts.get(state) || 0;
+        if (state === LOCATION_UNLISTED && count === 0) return;
 
         const a = document.createElement('a');
         a.href = '#';
         a.className = 'state-link';
 
-        if (stateDoctors.length > 0) {
-            a.innerHTML = `<span>${state}</span> <span class="doc-count">${stateDoctors.length}</span>`;
+        if (count > 0) {
+            a.innerHTML = `<span>${state}</span> <span class="doc-count">${count}</span>`;
 
-            a.addEventListener('click', (e) => {
+            a.addEventListener('click', async (e) => {
                 e.preventDefault();
-                renderDoctorCards(stateDoctors, state, 'state');
+                try {
+                    const doctors = await doctorsLoaded;
+                    const stateDoctors = doctors.filter(d => d.state === state);
+                    await loadMissingVideoCounts(stateDoctors);
+                    renderDoctorCards(stateDoctors, state, 'state');
+                } catch (err) {
+                    console.error('Could not load doctors for', state, err);
+                }
             });
         } else {
             a.innerHTML = state;
@@ -104,6 +145,19 @@ function setupStateGrid(doctors) {
 
         grid.appendChild(a);
     });
+}
+
+// Doctors added since the counts file was built have no video count yet: count theirs now.
+async function loadMissingVideoCounts(doctors) {
+    const ids = doctors.map(d => d.db_id).filter(id => !videoCounts.has(id));
+    if (!ids.length) return;
+    const videos = await fetchAllRows(() => db
+        .from('videos')
+        .select('doctor_id, title')
+        .in('doctor_id', ids)
+        .order('id'));
+    ids.forEach(id => videoCounts.set(id, 0));
+    videos.filter(isEnglishFriendlyVideo).forEach(v => videoCounts.set(v.doctor_id, videoCounts.get(v.doctor_id) + 1));
 }
 
 function renderDoctorCards(doctors, label, type = 'state') {
@@ -129,7 +183,7 @@ function renderDoctorCards(doctors, label, type = 'state') {
 
         const cleanedName = doc.name.replace(/"/g, '').trim();
         const specialty = doc.specialty || 'Medical expert';
-        const videoCount = allVideos.filter(v => v.doctor_id === doc.db_id).length;
+        const videoCount = videoCounts.get(doc.db_id) || 0;
 
         card.innerHTML = `
             <div class="card-inner">

@@ -316,6 +316,7 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.15; letter-spacing: -
 }
 .stat-num { font-family: var(--font-head); font-weight: 800; font-size: 1.25rem; color: var(--brand-dark); }
 .stat-label { color: var(--muted); font-size: 0.9rem; }
+.stats-as-of { margin: 8px 0 0; text-align: center; color: var(--muted); font-size: 0.8rem; }
 
 /* ---------- Topic chips (home, topics, topic pages) ---------- */
 .topic-chips {
