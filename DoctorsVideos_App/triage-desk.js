@@ -48,9 +48,17 @@ function isEmergency(userText) {
     return EMERGENCY_KEYWORDS.some(kw => text.includes(kw));
 }
 
+// A keyword only counts when it is typed as a whole word or phrase, so "ear" does not match
+// inside "heart". Common endings (s, es, ing, ed) still count: "headaches", "sleeping".
+function keywordPattern(keyword) {
+    const escaped = keyword.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&');
+    return new RegExp('(?:^|[^a-z0-9])' + escaped + '(?:s|es|ing|ed)?(?![a-z0-9])');
+}
+SYMPTOM_MAP.forEach(entry => { entry.patterns = entry.keywords.map(keywordPattern); });
+
 function matchSpecialty(userText) {
     const text = userText.toLowerCase();
-    const hits = SYMPTOM_MAP.filter(entry => entry.keywords.some(kw => text.includes(kw)));
+    const hits = SYMPTOM_MAP.filter(entry => entry.patterns.some(re => re.test(text)));
     const seen = new Set();
     const main = [];
     const also = [];
