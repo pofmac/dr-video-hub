@@ -595,7 +595,7 @@ a.topic-chip { text-decoration: none; display: inline-block; }
 /* ---------- Home "perspective" cards (all three the same height) ---------- */
 .portals-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 22px;
     align-items: stretch;
 }
@@ -633,6 +633,7 @@ a.topic-chip { text-decoration: none; display: inline-block; }
 a.portal-card { text-decoration: none; color: inherit; }
 .portal-btn.btn-navy, .portal-btn.btn-navy:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
 
+@media (max-width: 1150px) { .portals-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 860px) { .portals-grid { grid-template-columns: 1fr; } }
 
 /* ---------- State directory ---------- */
