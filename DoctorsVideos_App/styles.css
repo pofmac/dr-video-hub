@@ -630,6 +630,8 @@ a.topic-chip { text-decoration: none; display: inline-block; }
 .portal-btn { width: 100%; }
 .portal-btn.btn-primary { background: var(--grad); color: #fff; border-color: transparent; }
 .portal-btn.btn-primary:hover { box-shadow: 0 6px 18px rgba(14, 165, 233, 0.35); }
+a.portal-card { text-decoration: none; color: inherit; }
+.portal-btn.btn-navy, .portal-btn.btn-navy:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
 
 @media (max-width: 860px) { .portals-grid { grid-template-columns: 1fr; } }
 
