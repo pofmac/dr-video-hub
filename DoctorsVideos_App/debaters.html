@@ -147,26 +147,54 @@
     <script src="common.js"></script>
     <script src="ads.js"></script>
     <script>
-    // Remembers each viewer's pick in their own browser. Nothing is sent anywhere.
+    // One vote per browser for each debate. A vote is one row (debate, option, time) with no personal
+    // data; the running totals come from the get_debate_counts function. If the database is not set
+    // up or cannot be reached, the buttons still work and simply show no numbers.
     document.querySelectorAll('.debate-vote').forEach(function (group) {
-        var key = 'debate-vote-' + group.dataset.debate;
+        var debate = group.dataset.debate;
+        var key = 'debate-vote-' + debate;
         var status = group.nextElementSibling;
-        function show(pick) {
-            group.querySelectorAll('button').forEach(function (b) {
+        var buttons = group.querySelectorAll('button[data-vote]');
+        var pick = null;
+        try { pick = localStorage.getItem(key); } catch (e) {}
+
+        function show() {
+            buttons.forEach(function (b) {
                 var on = b.dataset.vote === pick;
                 b.setAttribute('aria-pressed', on ? 'true' : 'false');
                 b.classList.toggle('topic-chip-featured', on);
             });
             status.textContent = pick ? 'Your pick: ' + pick + '.' : '';
         }
-        var saved = null;
-        try { saved = localStorage.getItem(key); } catch (e) {}
-        show(saved);
+
+        function loadCounts() {
+            if (typeof db === 'undefined') return;
+            Promise.resolve(db.rpc('get_debate_counts', { p_debate: debate })).then(function (res) {
+                if (!res || res.error || !Array.isArray(res.data)) return;
+                var counts = {};
+                res.data.forEach(function (row) {
+                    var n = Number(row.count != null ? row.count : (row.votes != null ? row.votes : row.total));
+                    if (row.option != null && isFinite(n)) counts[row.option] = n;
+                });
+                buttons.forEach(function (b) {
+                    b.textContent = b.dataset.vote + ' \u2014 ' + (counts[b.dataset.vote] || 0);
+                });
+            }).catch(function () {});
+        }
+
+        show();
+        loadCounts();
+
         group.addEventListener('click', function (e) {
             var b = e.target.closest('button[data-vote]');
             if (!b) return;
-            try { localStorage.setItem(key, b.dataset.vote); } catch (err) {}
-            show(b.dataset.vote);
+            if (pick) { show(); loadCounts(); return; }
+            pick = b.dataset.vote;
+            try { localStorage.setItem(key, pick); } catch (err) {}
+            show();
+            if (typeof db === 'undefined') return;
+            Promise.resolve(db.from('debate_votes').insert({ debate: debate, option: pick }))
+                .then(loadCounts, loadCounts);
         });
     });
     </script>
